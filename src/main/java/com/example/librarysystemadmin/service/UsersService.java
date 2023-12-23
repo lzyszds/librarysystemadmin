@@ -7,7 +7,16 @@ public interface UsersService {
 
     User queryUser(String username);
 
-//    public User login(String username);
+    User[] queryUserList(int page, int limit);
 
+    int queryUserListCount();
+
+    int voucherRole(String token);
+
+    User[] querySearchUsers(String search, int page, int limit);
+
+    int querySearcUserListCount(String search);
+
+    int devastateUser(String id);
 
 }

@@ -6,6 +6,7 @@ public class ApiResponse<T> {
     private T data;
 
     public ApiResponse() {
+
     }
 
     public ApiResponse(int code, String message, T data) {
@@ -38,15 +39,22 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
+
     public void setSuccessResponse(T data) {
         this.code = 200;
         this.message = "success";
         this.data = data;
     }
 
-    public void setErrorResponse(int code, String message, T data) {
+    public void setSuccessResponses(T data) {
+        this.code = 200;
+        this.message = "success";
+        this.data = data;
+    }
+
+    public void setErrorResponse(int code, String message) {
         this.code = code;
         this.message = message;
-        this.data = data;
+        this.data = null;
     }
 }
