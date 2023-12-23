@@ -14,6 +14,8 @@ public class User {
     private Date created_at;   // 创建时间
     private String token;   // token
 
+    private String sex;
+
     public String getUsername() {
         return username;
     }
@@ -94,6 +96,14 @@ public class User {
         this.token = token;
     }
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -107,6 +117,7 @@ public class User {
                 ", id=" + id +
                 ", created_at=" + created_at +
                 ", token='" + token + '\'' +
+                ", sex='" + sex + '\'' +
                 '}';
     }
 }

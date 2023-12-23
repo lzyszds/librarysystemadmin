@@ -20,4 +20,29 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.queryUser(username);
     }
 
+    public User[] queryUserList(int page, int limit) {
+        return usersMapper.queryUserList(page, limit);
+    }
+
+    public int queryUserListCount() {
+        return usersMapper.queryUserListCount();
+    }
+
+    public int voucherRole(String token) {
+        return usersMapper.voucherRole(token);
+    }
+
+    public User[] querySearchUsers(String search, int page, int limit) {
+        return usersMapper.querySearchUsers(search, page, limit);
+
+    }
+
+    public int querySearcUserListCount(String search) {
+        return usersMapper.querySearcUserListCount(search);
+    }
+
+    public int devastateUser(String id) {
+        return usersMapper.devastateUser(id);
+    }
+
 }
