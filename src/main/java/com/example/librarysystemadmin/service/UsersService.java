@@ -11,7 +11,7 @@ public interface UsersService {
 
     int queryUserListCount();
 
-    int voucherRole(String token);
+    int voucherRole(String username);
 
     User[] querySearchUsers(String search, int page, int limit);
 

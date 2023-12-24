@@ -36,7 +36,10 @@ public class userController {
             if ("token".equals(cookie.getName())) {
                 // 获取 Cookie 的值
                 String tokenValue = cookie.getValue();
-                voucher = usersService.voucherRole(tokenValue);
+                //解密token 获取用户名
+                String username = RSAUtils.decrypt(tokenValue);
+                //查询用户角色
+                voucher = usersService.voucherRole(username);
             }
         }
 
@@ -51,7 +54,7 @@ public class userController {
         // 对密码进行加密 使用用户账号作为初始密码
         params.setPassword(RSAUtils.encrypt(params.getUsername()));
 
-        // 对token进行加密 并添加随机字符串
+        // 将用户名加密作为token
         String token = RSAUtils.encrypt(params.getUsername());
         params.setToken(token);
 

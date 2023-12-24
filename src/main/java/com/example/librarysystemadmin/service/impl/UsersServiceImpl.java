@@ -28,8 +28,8 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.queryUserListCount();
     }
 
-    public int voucherRole(String token) {
-        return usersMapper.voucherRole(token);
+    public int voucherRole(String username) {
+        return usersMapper.voucherRole(username);
     }
 
     public User[] querySearchUsers(String search, int page, int limit) {

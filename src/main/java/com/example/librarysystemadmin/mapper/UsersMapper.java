@@ -21,8 +21,8 @@ public interface UsersMapper {
     @Select("SELECT count(*) FROM users")
     int queryUserListCount();
 
-    @Select("SELECT role from users where token = #{token}")
-    int voucherRole(String token);
+    @Select("SELECT role from users where username = #{username}")
+    int voucherRole(String username);
 
     @Select("SELECT id, username, role, email, phone, address, name, created_at, sex FROM users" +
             " where username like '%${search}%' or email like '%${search}%' or phone like '%${search}%' or " +
