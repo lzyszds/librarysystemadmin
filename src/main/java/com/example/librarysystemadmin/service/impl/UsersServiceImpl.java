@@ -28,8 +28,12 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.queryUserListCount();
     }
 
-    public int voucherRole(String token) {
-        return usersMapper.voucherRole(token);
+    public String queryUserById(String id) {
+        return usersMapper.queryUserById(id);
+    }
+
+    public int voucherRole(String username) {
+        return usersMapper.voucherRole(username);
     }
 
     public User[] querySearchUsers(String search, int page, int limit) {
@@ -45,4 +49,11 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.devastateUser(id);
     }
 
+    public int resetPassword(String id, String password) {
+        return usersMapper.resetPassword(id, password);
+    }
+
+    public int updateUserListInfoAdmin(String id, String name, String email, String phone, String role, String sex, String address) {
+        return usersMapper.updateUserListInfoAdmin(id, name, email, phone, role, sex, address);
+    }
 }

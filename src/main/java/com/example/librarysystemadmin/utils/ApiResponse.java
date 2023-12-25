@@ -1,6 +1,12 @@
 package com.example.librarysystemadmin.utils;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ApiResponse<T> {
+    public static final Logger log = LoggerFactory.getLogger(ApiResponse.class);
+
     private int code;
     private String message;
     private T data;
@@ -56,5 +62,13 @@ public class ApiResponse<T> {
         this.code = code;
         this.message = message;
         this.data = null;
+    }
+
+    public void setErrorResponse(int code, String message, String api, Exception error) {
+        this.code = code;
+        this.message = message;
+        this.data = null;
+        log.error("api:《《 " + api + "》》 error: " + error +
+                "\n----------------------------------------------------------------------------------------------------------------------------");
     }
 }
