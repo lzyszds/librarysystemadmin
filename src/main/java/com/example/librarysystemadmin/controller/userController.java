@@ -134,7 +134,7 @@ public class userController {
             }
         } catch (Exception e) {
             // 捕获异常并返回适当的错误信息
-            apiResponse.setErrorResponse(500, e.toString());
+            apiResponse.setErrorResponse(400, "登录失败", "/Api/login", e);
         }
 
         return apiResponse;
@@ -163,12 +163,12 @@ public class userController {
                 listDataCount.setData(list);
                 apiResponse.setSuccessResponses(listDataCount);
             } else {
-                apiResponse.setErrorResponse(403, "error");
+                apiResponse.setErrorResponse(403, "暂无权限查看用户列表");
             }
         } catch (NumberFormatException e) {
-            apiResponse.setErrorResponse(400, "Invalid page or limit parameter");
+            apiResponse.setErrorResponse(400, "Invalid page or limit parameter", "/Api/queryUserList", e);
         } catch (Exception e) {
-            apiResponse.setErrorResponse(500, "Internal Server Error");
+            apiResponse.setErrorResponse(500, "Internal Server Error", "/Api/queryUserList", e);
         }
         return apiResponse;
 
@@ -199,6 +199,10 @@ public class userController {
         return apiResponse;
     }
 
+    /*
+     *  删除用户
+     *  传入用户id 字符串 示例：10,11,12 或者 10
+     * */
     @PostMapping("/devastateUser")
     public ApiResponse<String> devastateUser(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
