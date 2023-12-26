@@ -12,6 +12,7 @@ public class UsersServiceImpl implements UsersService {
     private UsersMapper usersMapper;
 
     public int registerUser(User user) {
+
         return usersMapper.registerUser(user);
 
     }
@@ -20,8 +21,8 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.queryUser(username);
     }
 
-    public User[] queryUserList(int page, int limit) {
-        return usersMapper.queryUserList(page, limit);
+    public User[] queryUserList(String search, int page, int limit) {
+        return usersMapper.queryUserList(search, page, limit);
     }
 
     public int queryUserListCount() {
@@ -36,10 +37,6 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.voucherRole(username);
     }
 
-    public User[] querySearchUsers(String search, int page, int limit) {
-        return usersMapper.querySearchUsers(search, page, limit);
-
-    }
 
     public int querySearcUserListCount(String search) {
         return usersMapper.querySearcUserListCount(search);

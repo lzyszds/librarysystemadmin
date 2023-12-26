@@ -8,7 +8,6 @@ import com.example.librarysystemadmin.utils.RSAUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.util.Map;
@@ -25,47 +24,22 @@ import java.util.Map;
  *
  * */
 @RestController
-@RequestMapping("/Api")
+@RequestMapping("/Api/User")
 public class userController {
 
     @Autowired
     private UsersService usersService;
 
 
-    /*
-     * 验证凭证
-     * return 0 管理员  1 读者 2 游客
-     */
-    public int inspectCookie(Cookie[] cookies) {
-        int voucher = 2;
-        //获取token 键值
-        if (cookies == null) {
-            return voucher;
-        }
-        // 遍历 Cookie 数组
-        for (Cookie cookie : cookies) {
-            // 检查是否是你需要的 Cookie，这里假设你的 Cookie 名称为 "token"
-            if ("token".equals(cookie.getName())) {
-                // 获取 Cookie 的值
-                String tokenValue = cookie.getValue();
-                //解密token 获取用户名
-                String username = RSAUtils.decrypt(tokenValue);
-                //查询用户角色
-                voucher = usersService.voucherRole(username);
-            }
-        }
-
-        return voucher;
-    }
-
     @PostMapping("/register")
     public ApiResponse<String> register(@RequestBody User params) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
 
-        ApiResponse<String> apiResponse = new ApiResponse<String>();
         // 设置创建时间
         params.setCreated_at(new Date(System.currentTimeMillis()));
         // 对密码进行加密 使用用户账号作为初始密码
         params.setPassword(RSAUtils.encrypt(params.getUsername()));
+
         // 参数验证
         if (params.getUsername() == null || params.getUsername().isEmpty()) {
             apiResponse.setErrorResponse(400, "用户名不能为空");
@@ -73,63 +47,62 @@ public class userController {
         }
 
         // 检查用户名是否已经存在
-//        if (usersService.queryUser(params.getUsername()) != null) {
-//            apiResponse.setErrorResponse(400, "用户名已存在");
-//            return apiResponse;
-//        }
+        if (usersService.queryUser(params.getUsername()) != null) {
+            apiResponse.setErrorResponse(400, "用户名已存在");
+            return apiResponse;
+        }
+
         // 将用户名加密作为token
         String token = RSAUtils.encrypt(params.getUsername());
         params.setToken(token);
 
-        try {
-            int result = usersService.registerUser(params);
-            if (result == 0) {
-                // 返回失败结果和失败码
-                apiResponse.setErrorResponse(400, "注册失败");
-            } else {
-                // 返回成功结果和成功码
-                apiResponse.setSuccessResponse(token);
-            }
-
-        } catch (Exception e) {
-            apiResponse.setErrorResponse(400, "注册失败", "/Api/register", e);
+        int result = usersService.registerUser(params);
+        if (result == 0) {
+            apiResponse.setErrorResponse(400, "注册失败");
+        } else {
+            apiResponse.setSuccessResponse(token);
         }
 
         return apiResponse;
     }
 
+
     @PostMapping("/login")
     public ApiResponse<String> login(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        String username = params.get("username");
-        String password = params.get("password");
-        String captcha = params.get("captcha");
 
         try {
+            String username = params.get("username");
+            String password = params.get("password");
+            String captcha = params.get("captcha");
+
+            // 检查参数
             if (username == null || password == null || captcha == null) {
-                //抛出异常
                 apiResponse.setErrorResponse(400, "参数错误");
                 return apiResponse;
             }
-            if (request.getSession().getAttribute("captcha") == null) {
-                apiResponse.setErrorResponse(400, "验证码失效");
-                return apiResponse;
-            } else if (!request.getSession().getAttribute("captcha").equals(captcha)) {
-                apiResponse.setErrorResponse(400, "验证码错误");
+
+            // 检查验证码
+            Object sessionCaptcha = request.getSession().getAttribute("captcha");
+            if (sessionCaptcha == null || !sessionCaptcha.equals(captcha)) {
+                apiResponse.setErrorResponse(400, sessionCaptcha == null ? "验证码失效" : "验证码错误");
                 return apiResponse;
             }
 
-            User userInfo = usersService.queryUser(username); // 查询用户是否存在
+            // 验证码正确后删除验证码
+            request.getSession().removeAttribute("captcha");
+
+            // 查询用户信息
+            User userInfo = usersService.queryUser(username);
             if (userInfo == null) {
                 apiResponse.setErrorResponse(404, "用户不存在");
                 return apiResponse;
             }
 
+            // 验证密码
             if (RSAUtils.decrypt(userInfo.getPassword()).equals(password)) {
-                // 返回成功结果和成功码
                 apiResponse.setSuccessResponse(userInfo.getToken());
             } else {
-                // 返回失败结果和失败码
                 apiResponse.setErrorResponse(400, "密码错误");
             }
         } catch (Exception e) {
@@ -141,63 +114,29 @@ public class userController {
     }
 
 
-    //获取用户列表
+    //获取用户列表 required = false表示参数不是必须的 defaultValue = "1"表示默认值为1
     @GetMapping("/queryUserList")
-    public ApiResponse<ListDataCount<User[]>> queryUserlist(@RequestParam(name = "page") String pageStr,
-                                                            @RequestParam(name = "limit") String limitStr,
-                                                            HttpServletRequest request) {
-        ListDataCount<User[]> listDataCount = new ListDataCount<>();
+    public ApiResponse<ListDataCount<User[]>> queryUserlist(@RequestParam(required = false, defaultValue = "1") int page,
+                                                            @RequestParam(required = false, defaultValue = "10") int limit,
+                                                            @RequestParam(required = false, defaultValue = "") String search) {
         ApiResponse<ListDataCount<User[]>> apiResponse = new ApiResponse<>();
-        Cookie[] cookies = request.getCookies();
 
         try {
-            //只有为管理员才能获取
-            if (inspectCookie(cookies) == 0) {
-                int page = Integer.parseInt(pageStr) - 1;
-                int limit = Integer.parseInt(limitStr);
-                // 查询用户列表 分页 page是页数 limit是每页的数量 让数据库从第page*limit条开始查询 limit条数据
-                User[] list = usersService.queryUserList(page * limit, limit);
-                Integer size = usersService.queryUserListCount(); // 查询用户总数
-                // 返回成功结果和成功码 返回用户列表 和 用户总数
-                listDataCount.setCount(size);
-                listDataCount.setData(list);
-                apiResponse.setSuccessResponses(listDataCount);
-            } else {
-                apiResponse.setErrorResponse(403, "暂无权限查看用户列表");
-            }
+            // 查询用户列表 分页 page是页数 limit是每页的数量 让数据库从第page*limit条开始查询 limit条数据
+            User[] list = usersService.queryUserList(search, (page - 1) * limit, limit);
+            Integer size = usersService.queryUserListCount(); // 查询用户总数
+
+            // 返回成功结果和成功码 返回用户列表 和 用户总数
+            ListDataCount<User[]> listDataCount = new ListDataCount<>(size, list);
+            apiResponse.setSuccessResponse(listDataCount);
         } catch (NumberFormatException e) {
             apiResponse.setErrorResponse(400, "Invalid page or limit parameter", "/Api/queryUserList", e);
         } catch (Exception e) {
             apiResponse.setErrorResponse(500, "Internal Server Error", "/Api/queryUserList", e);
         }
         return apiResponse;
-
     }
 
-    @GetMapping("/querySearchUsers")
-    public ApiResponse<ListDataCount<User[]>> querySearchUsers(@RequestParam(name = "page") String pageStr,
-                                                               @RequestParam(name = "limit") String limitStr,
-                                                               @RequestParam(name = "search") String search,
-                                                               HttpServletRequest request) {
-        ListDataCount<User[]> listDataCount = new ListDataCount<>();
-        ApiResponse<ListDataCount<User[]>> apiResponse = new ApiResponse<>();
-        Cookie[] cookies = request.getCookies();
-        //只有为管理员才能获取
-        if (inspectCookie(cookies) == 0) {
-            int page = Integer.parseInt(pageStr) - 1;
-            int limit = Integer.parseInt(limitStr);
-            // 查询用户列表 分页 page是页数 limit是每页的数量 让数据库从第page*limit条开始查询 limit条数据
-            int size = usersService.querySearcUserListCount(search);
-            User[] user = usersService.querySearchUsers(search, page * limit, limit);
-            listDataCount.setCount(size);
-            listDataCount.setData(user);
-            apiResponse.setSuccessResponse(listDataCount);
-        } else {
-            apiResponse.setErrorResponse(403, "暂无权限");
-        }
-
-        return apiResponse;
-    }
 
     /*
      *  删除用户
@@ -206,31 +145,27 @@ public class userController {
     @PostMapping("/devastateUser")
     public ApiResponse<String> devastateUser(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        Cookie[] cookies = request.getCookies();
-        //只有为管理员才能获取
-        if (inspectCookie(cookies) == 0) {
-            String id = params.get("id");
-            if (id.contains(".0.")) {
-                //不能删除超级管理员
-                apiResponse.setErrorResponse(403, "不能删除超级管理员");
-                return apiResponse;
-            }
-            try {
-                int result = usersService.devastateUser(id);
-                if (result == 0) {
-                    // 返回失败结果和失败码
-                    apiResponse.setErrorResponse(500, "删除失败,用户可能不存在，请重新尝试");
-                } else {
-                    // 返回成功结果和成功码
-                    apiResponse.setErrorResponse(200, "删除成功");
-                }
 
-            } catch (Exception e) {
-                // 捕获异常并返回适当的错误信息
-                apiResponse.setErrorResponse(500, e.toString());
+        //只有为管理员才能获取
+        String id = params.get("id");
+        if (id.contains(".0.")) {
+            //不能删除超级管理员
+            apiResponse.setErrorResponse(403, "不能删除超级管理员");
+            return apiResponse;
+        }
+        try {
+            int result = usersService.devastateUser(id);
+            if (result == 0) {
+                // 返回失败结果和失败码
+                apiResponse.setErrorResponse(500, "删除失败,用户可能不存在，请重新尝试");
+            } else {
+                // 返回成功结果和成功码
+                apiResponse.setErrorResponse(200, "删除成功");
             }
-        } else {
-            apiResponse.setErrorResponse(403, "暂无权限");
+
+        } catch (Exception e) {
+            // 捕获异常并返回适当的错误信息
+            apiResponse.setErrorResponse(500, e.toString());
         }
 
         return apiResponse;
@@ -243,33 +178,29 @@ public class userController {
     @PostMapping("/resetPassword")
     public ApiResponse<String> resetPassword(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        Cookie[] cookies = request.getCookies();
+
         //只有为管理员才能获取
-        if (inspectCookie(cookies) == 0) {
-            String id = params.get("id");
-            if (id.contains(".0.")) {
-                //不能删除超级管理员
-                apiResponse.setErrorResponse(403, "不能重置超级管理员密码");
-                return apiResponse;
-            }
-            try {
-                String usernaem = usersService.queryUserById(id);
-                int result = usersService.resetPassword(id, RSAUtils.encrypt(usernaem));
+        String id = params.get("id");
+        if (id.contains(".0.")) {
+            //不能删除超级管理员
+            apiResponse.setErrorResponse(403, "不能重置超级管理员密码");
+            return apiResponse;
+        }
+        try {
+            String usernaem = usersService.queryUserById(id);
+            int result = usersService.resetPassword(id, RSAUtils.encrypt(usernaem));
 
-                if (result == 0) {
-                    // 返回失败结果和失败码
-                    apiResponse.setErrorResponse(500, "重置失败,用户可能不存在，请重新尝试");
-                } else {
-                    // 返回成功结果和成功码
-                    apiResponse.setErrorResponse(200, "重置成功");
-                }
-
-            } catch (Exception e) {
-                // 捕获异常并返回适当的错误信息
-                apiResponse.setErrorResponse(500, e.toString());
+            if (result == 0) {
+                // 返回失败结果和失败码
+                apiResponse.setErrorResponse(500, "重置失败,用户可能不存在，请重新尝试");
+            } else {
+                // 返回成功结果和成功码
+                apiResponse.setErrorResponse(200, "重置成功");
             }
-        } else {
-            apiResponse.setErrorResponse(403, "暂无权限");
+
+        } catch (Exception e) {
+            // 捕获异常并返回适当的错误信息
+            apiResponse.setErrorResponse(500, e.toString());
         }
 
         return apiResponse;
@@ -281,34 +212,30 @@ public class userController {
     @PostMapping("/updateUserListInfoAdmin")
     public ApiResponse<String> updateUserListInfoAdmin(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        Cookie[] cookies = request.getCookies();
+
         //只有为管理员才能获取
-        if (inspectCookie(cookies) == 0) {
-            String id = params.get("id");
-            String name = params.get("name");
-            String email = params.get("email");
-            String phone = params.get("phone");
-            String role = params.get("role");
-            String sex = params.get("sex");
-            String address = params.get("address");
+        String id = params.get("id");
+        String name = params.get("name");
+        String email = params.get("email");
+        String phone = params.get("phone");
+        String role = params.get("role");
+        String sex = params.get("sex");
+        String address = params.get("address");
 
 
-            try {
-                int result = usersService.updateUserListInfoAdmin(id, name, email, phone, role, sex, address);
-                if (result == 0) {
-                    // 返回失败结果和失败码
-                    apiResponse.setErrorResponse(500, "修改失败,用户可能不存在，请重新尝试");
-                } else {
-                    // 返回成功结果和成功码
-                    apiResponse.setErrorResponse(200, "修改成功");
-                }
-
-            } catch (Exception e) {
-                // 捕获异常并返回适当的错误信息
-                apiResponse.setErrorResponse(500, e.toString());
+        try {
+            int result = usersService.updateUserListInfoAdmin(id, name, email, phone, role, sex, address);
+            if (result == 0) {
+                // 返回失败结果和失败码
+                apiResponse.setErrorResponse(500, "修改失败,用户可能不存在，请重新尝试");
+            } else {
+                // 返回成功结果和成功码
+                apiResponse.setErrorResponse(200, "修改成功");
             }
-        } else {
-            apiResponse.setErrorResponse(403, "暂无权限");
+
+        } catch (Exception e) {
+            // 捕获异常并返回适当的错误信息
+            apiResponse.setErrorResponse(500, e.toString());
         }
 
         return apiResponse;

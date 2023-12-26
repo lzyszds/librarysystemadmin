@@ -52,16 +52,11 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-    public void setSuccessResponses(T data) {
-        this.code = 200;
-        this.message = "success";
-        this.data = data;
-    }
-
     public void setErrorResponse(int code, String message) {
         this.code = code;
         this.message = message;
         this.data = null;
+
     }
 
     public void setErrorResponse(int code, String message, String api, Exception error) {
