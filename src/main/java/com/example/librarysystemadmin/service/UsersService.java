@@ -7,7 +7,7 @@ public interface UsersService {
 
     User queryUser(String username);
 
-    User[] queryUserList(int page, int limit);
+    User[] queryUserList(String search, int page, int limit);
 
     int queryUserListCount();
 
@@ -15,7 +15,6 @@ public interface UsersService {
 
     int voucherRole(String username);
 
-    User[] querySearchUsers(String search, int page, int limit);
 
     int querySearcUserListCount(String search);
 

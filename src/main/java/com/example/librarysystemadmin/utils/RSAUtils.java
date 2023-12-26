@@ -99,6 +99,8 @@ public class RSAUtils {
      */
     public static String decrypt(String str) {
         try {
+            if (str.length() < 2) return null;
+
             // 64位解码加密后的字符串
             byte[] inputByte = Base64.getDecoder().decode(str);
 

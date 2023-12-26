@@ -12,8 +12,10 @@ public interface UsersMapper {
     @Select("SELECT * FROM users WHERE username = #{username}")
     User queryUser(String username);
 
-    @Select("SELECT id, username, role, email, phone, address, name, created_at, sex FROM users LIMIT #{page}, #{limit};")
-    User[] queryUserList(int page, int limit);
+    @Select("SELECT id, username, role, email, phone, address, name, created_at, sex FROM users" +
+            " where username like '%${search}%' or email like '%${search}%' or phone like '%${search}%' or " +
+            "address like '%${search}%' or name like '%${search}%' LIMIT #{page}, #{limit};")
+    User[] queryUserList(String search, int page, int limit);
 
     @Select("SELECT count(*) FROM users")
     int queryUserListCount();
@@ -24,10 +26,7 @@ public interface UsersMapper {
     @Select("SELECT role from users where username = #{username}")
     int voucherRole(String username);
 
-    @Select("SELECT id, username, role, email, phone, address, name, created_at, sex FROM users" +
-            " where username like '%${search}%' or email like '%${search}%' or phone like '%${search}%' or " +
-            "address like '%${search}%' or name like '%${search}%' LIMIT #{page}, #{limit};")
-    User[] querySearchUsers(String search, int page, int limit);
+
 
     @Select("SELECT count(*) FROM users where username like '%${search}%' or email like '%${search}%' or phone like '%${search}%' or " +
             "address like '%${search}%' or name like '%${search}%'")
