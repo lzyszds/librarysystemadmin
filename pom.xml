@@ -40,7 +40,12 @@
             <artifactId>nashorn-core</artifactId>
             <version>15.4</version>
         </dependency>
-
+        <!--压缩库 Java 图片处理库 支持图片缩放、旋转、裁剪等-->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.14</version>
+        </dependency>
 
         <dependency>
             <groupId>joda-time</groupId>
