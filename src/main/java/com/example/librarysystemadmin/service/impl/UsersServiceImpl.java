@@ -1,6 +1,7 @@
 package com.example.librarysystemadmin.service.impl;
 
 import com.example.librarysystemadmin.domain.User;
+import com.example.librarysystemadmin.domain.UserSecret;
 import com.example.librarysystemadmin.mapper.UsersMapper;
 import com.example.librarysystemadmin.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,20 @@ public class UsersServiceImpl implements UsersService {
 
     }
 
-    public User queryUser(String username) {
-        return usersMapper.queryUser(username);
+    public User getUser(String username) {
+        return usersMapper.getUser(username);
     }
 
-    public User[] queryUserList(String search, int page, int limit) {
-        return usersMapper.queryUserList(search, page, limit);
+    public UserSecret[] getUserList(String search, int page, int limit) {
+        return usersMapper.getUserList(search, page, limit);
     }
 
-    public int queryUserListCount() {
-        return usersMapper.queryUserListCount();
+    public int getUserListCount(String search) {
+        return usersMapper.getUserListCount(search);
     }
 
-    public String queryUserById(String id) {
-        return usersMapper.queryUserById(id);
+    public String getUserById(String id) {
+        return usersMapper.getUserById(id);
     }
 
     public int voucherRole(String username) {
@@ -38,8 +39,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
 
-    public int querySearcUserListCount(String search) {
-        return usersMapper.querySearcUserListCount(search);
+    public int getSearcUserListCount(String search) {
+        return usersMapper.getSearcUserListCount(search);
     }
 
     public int devastateUser(String id) {
@@ -52,5 +53,9 @@ public class UsersServiceImpl implements UsersService {
 
     public int updateUserListInfoAdmin(String id, String name, String email, String phone, String role, String sex, String address) {
         return usersMapper.updateUserListInfoAdmin(id, name, email, phone, role, sex, address);
+    }
+
+    public UserSecret getUserByToken(String token) {
+        return usersMapper.getUserByToken(token);
     }
 }

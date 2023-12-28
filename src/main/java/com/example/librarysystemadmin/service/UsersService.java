@@ -1,26 +1,30 @@
 package com.example.librarysystemadmin.service;
 
 import com.example.librarysystemadmin.domain.User;
+import com.example.librarysystemadmin.domain.UserSecret;
 
 public interface UsersService {
     int registerUser(User user);
 
-    User queryUser(String username);
+    User getUser(String username);
 
-    User[] queryUserList(String search, int page, int limit);
+    UserSecret[] getUserList(String search, int page, int limit);
 
-    int queryUserListCount();
+    int getUserListCount(String search);
 
-    String queryUserById(String id);
+    String getUserById(String id);
 
     int voucherRole(String username);
 
 
-    int querySearcUserListCount(String search);
+    int getSearcUserListCount(String search);
 
     int devastateUser(String id);
 
     int resetPassword(String id, String password);
 
     int updateUserListInfoAdmin(String id, String name, String email, String phone, String role, String sex, String address);
+
+    UserSecret getUserByToken(String token);
+
 }

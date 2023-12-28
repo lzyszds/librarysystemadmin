@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(myInterceptor).addPathPatterns("/Api/**")//拦截所有路由
                 //放行路由
                 .excludePathPatterns("/Api/User/login", "/Api/User/register", "/Api/util/captcha",
-                        "/Api/Book/queryBookList", "/Api/Book/queryBookById", "/Api/Book/queryBookByBookName"
+                        "/Api/Book/getBookList", "/Api/Book/getBookById", "/Api/Book/getBookByBookName"
                 );
     }
 }

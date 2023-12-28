@@ -2,6 +2,7 @@ package com.example.librarysystemadmin.controller;
 
 import com.example.librarysystemadmin.domain.ListDataCount;
 import com.example.librarysystemadmin.domain.User;
+import com.example.librarysystemadmin.domain.UserSecret;
 import com.example.librarysystemadmin.service.UsersService;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import com.example.librarysystemadmin.utils.RSAUtils;
@@ -47,7 +48,7 @@ public class userController {
         }
 
         // 检查用户名是否已经存在
-        if (usersService.queryUser(params.getUsername()) != null) {
+        if (usersService.getUser(params.getUsername()) != null) {
             apiResponse.setErrorResponse(400, "用户名已存在");
             return apiResponse;
         }
@@ -93,7 +94,7 @@ public class userController {
             request.getSession().removeAttribute("captcha");
 
             // 查询用户信息
-            User userInfo = usersService.queryUser(username);
+            User userInfo = usersService.getUser(username);
             if (userInfo == null) {
                 apiResponse.setErrorResponse(404, "用户不存在");
                 return apiResponse;
@@ -115,24 +116,24 @@ public class userController {
 
 
     //获取用户列表 required = false表示参数不是必须的 defaultValue = "1"表示默认值为1
-    @GetMapping("/queryUserList")
-    public ApiResponse<ListDataCount<User[]>> queryUserlist(@RequestParam(required = false, defaultValue = "1") int page,
-                                                            @RequestParam(required = false, defaultValue = "10") int limit,
-                                                            @RequestParam(required = false, defaultValue = "") String search) {
-        ApiResponse<ListDataCount<User[]>> apiResponse = new ApiResponse<>();
+    @GetMapping("/getUserList")
+    public ApiResponse<ListDataCount<UserSecret[]>> getUserlist(@RequestParam(required = false, defaultValue = "1") int page,
+                                                                @RequestParam(required = false, defaultValue = "10") int limit,
+                                                                @RequestParam(required = false, defaultValue = "") String search) {
+        ApiResponse<ListDataCount<UserSecret[]>> apiResponse = new ApiResponse<>();
 
         try {
             // 查询用户列表 分页 page是页数 limit是每页的数量 让数据库从第page*limit条开始查询 limit条数据
-            User[] list = usersService.queryUserList(search, (page - 1) * limit, limit);
-            Integer size = usersService.queryUserListCount(); // 查询用户总数
+            UserSecret[] list = usersService.getUserList(search, (page - 1) * limit, limit);
+            Integer size = usersService.getUserListCount(search); // 查询用户总数
 
             // 返回成功结果和成功码 返回用户列表 和 用户总数
-            ListDataCount<User[]> listDataCount = new ListDataCount<>(size, list);
+            ListDataCount<UserSecret[]> listDataCount = new ListDataCount<>(size, list);
             apiResponse.setSuccessResponse(listDataCount);
         } catch (NumberFormatException e) {
-            apiResponse.setErrorResponse(400, "Invalid page or limit parameter", "/Api/queryUserList", e);
+            apiResponse.setErrorResponse(400, "Invalid page or limit parameter", "/Api/getUserList", e);
         } catch (Exception e) {
-            apiResponse.setErrorResponse(500, "Internal Server Error", "/Api/queryUserList", e);
+            apiResponse.setErrorResponse(500, "Internal Server Error", "/Api/getUserList", e);
         }
         return apiResponse;
     }
@@ -187,7 +188,7 @@ public class userController {
             return apiResponse;
         }
         try {
-            String usernaem = usersService.queryUserById(id);
+            String usernaem = usersService.getUserById(id);
             int result = usersService.resetPassword(id, RSAUtils.encrypt(usernaem));
 
             if (result == 0) {
