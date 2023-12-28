@@ -14,6 +14,16 @@ public class BookWithCategory {
     private Date publish_date;
     private String isbn;
     private String category_name;
+    private String category_id;
+
+    public String getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(String category_id) {
+        this.category_id = category_id;
+    }
+
     private String status;
 
     public Long getBook_id() {
@@ -108,6 +118,7 @@ public class BookWithCategory {
                 ", publish_date=" + publish_date +
                 ", isbn='" + isbn + '\'' +
                 ", category_name='" + category_name + '\'' +
+                ", category_id='" + category_id + '\'' +
                 ", status='" + status + '\'' +
                 '}';
     }
