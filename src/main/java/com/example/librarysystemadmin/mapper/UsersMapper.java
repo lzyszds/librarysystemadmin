@@ -23,9 +23,13 @@ public interface UsersMapper {
             "address like '%${search}%' or name like '%${search}%'")
     int getUserListCount(String search);
 
-    // 根据用户id获取用户信息
+    // 根据用户id获取用户名称
     @Select("SELECT username FROM users WHERE id = #{id}")
-    String getUserById(String id);
+    String getUserNameById(String id);
+
+    // 根据用户id获取用户名称
+    @Select("SELECT username FROM users WHERE id in #{id}")
+    User[] getUserByid(String id);
 
     // 根据用户名获取用户角色
     @Select("SELECT role from users where username = #{username}")
@@ -50,5 +54,6 @@ public interface UsersMapper {
     @Update("UPDATE users SET name=#{name}, email=#{email}, phone=#{phone}, role=#{role}, sex=#{sex}, address=#{address} WHERE id=#{id} ")
     int updateUserListInfoAdmin(String id, String name, String email, String phone, String role, String sex, String address);
 
-
+    @Update("UPDATE users SET borrow=#{borrow} WHERE id=#{id}")
+    void updateBorrowCount(int id, String borrow);
 }

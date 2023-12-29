@@ -188,7 +188,7 @@ public class userController {
             return apiResponse;
         }
         try {
-            String usernaem = usersService.getUserById(id);
+            String usernaem = usersService.getUserNameById(id);
             int result = usersService.resetPassword(id, RSAUtils.encrypt(usernaem));
 
             if (result == 0) {

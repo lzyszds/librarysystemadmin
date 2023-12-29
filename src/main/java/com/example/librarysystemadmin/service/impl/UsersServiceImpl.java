@@ -30,8 +30,12 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.getUserListCount(search);
     }
 
-    public String getUserById(String id) {
-        return usersMapper.getUserById(id);
+    public User[] getUserById(String id) {
+        return usersMapper.getUserByid(id);
+    }
+
+    public String getUserNameById(String id) {
+        return usersMapper.getUserNameById(id);
     }
 
     public int voucherRole(String username) {

@@ -30,6 +30,7 @@ import java.io.PrintStream;
 @Component("customGlobalExceptionHandler")
 public class GlobalExceptionHandler {
 
+
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(value = Exception.class)
@@ -38,6 +39,7 @@ public class GlobalExceptionHandler {
     public ApiResponse<String> globalExceptionHandle(Exception e) {
         log.error("===========全局统一异常处理============");
         log.error(getExceptionInfo(e));
+        // 打印 SQL 语句
         return new ApiResponse<>(500, "error", getExceptionInfo(e));
     }
 

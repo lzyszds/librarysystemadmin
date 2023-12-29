@@ -2,6 +2,7 @@ package com.example.librarysystemadmin.service.impl;
 
 import com.example.librarysystemadmin.domain.BookLoan;
 import com.example.librarysystemadmin.domain.BookLoanWithBookUser;
+import com.example.librarysystemadmin.domain.User;
 import com.example.librarysystemadmin.domain.UserSecret;
 import com.example.librarysystemadmin.mapper.BookLoanMapper;
 import com.example.librarysystemadmin.mapper.UsersMapper;
@@ -49,11 +50,29 @@ public class BookLoanServiceImpl implements BookLoanService {
 
             if (bookLoanMapper.insertBookLoan(bookLoan) < 1) {
                 return "借阅失败";
-            }else{
+            } else {
+                User[] user = usersMapper.getUserByid(Integer.toString(users.getId()));
                 //给用户添加借阅次数
+                usersMapper.updateBorrowCount(users.getId(), user[0].getBorrow() + bookId);
             }
             return null;
         }
 
+    }
+
+    public String returnBook(String bookId, String token) {
+        UserSecret users = usersMapper.getUserByToken(token);
+        if (users == null) {
+            return "用户不存在";
+        } else {
+            BookLoan bookLoan = new BookLoan();
+            bookLoan.setBookId(Integer.parseInt(bookId));
+            bookLoan.setuserId(users.getId());
+            bookLoan.setReturnDate(new Date(System.currentTimeMillis()));
+            if (bookLoanMapper.updateBookLoan(bookLoan) < 1) {
+                return "还书失败";
+            }
+            return null;
+        }
     }
 }

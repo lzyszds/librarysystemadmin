@@ -1,18 +1,16 @@
 package com.example.librarysystemadmin.service;
 
-import com.example.librarysystemadmin.domain.Book;
 import com.example.librarysystemadmin.domain.BookCategories;
-import com.example.librarysystemadmin.domain.BookWithCategory;
+import com.example.librarysystemadmin.domain.CategoryCopiesBook;
+import com.example.librarysystemadmin.domain.FetchBook;
 import com.example.librarysystemadmin.utils.ApiResponse;
 
 public interface BooksService {
-    BookWithCategory[] getBookList(String search, int page, int limit);
+    CategoryCopiesBook[] getBookList(String search, int page, int limit);
 
     int getBookCount(String search);
 
-    ApiResponse<String> saveBookInfo(Book book);
-
-
+    ApiResponse<String> saveBookInfo(FetchBook book);
 
     ApiResponse<String> devastateBook(String book_id);
 

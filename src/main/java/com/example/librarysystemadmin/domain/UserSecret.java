@@ -11,7 +11,11 @@ public class UserSecret {
     private String address; // 地址
     private String name;    // 姓名
     private Date created_at;   // 创建时间
-    private String sex;
+    private String sex; // 性别
+
+    private String borrow; // 当前借阅
+
+    private String historyBorrow; // 历史借阅
 
     public int getId() {
         return id;
@@ -85,6 +89,22 @@ public class UserSecret {
         this.sex = sex;
     }
 
+    public String getBorrow() {
+        return borrow;
+    }
+
+    public void setBorrow(String borrow) {
+        this.borrow = borrow;
+    }
+
+    public String getHistoryBorrow() {
+        return historyBorrow;
+    }
+
+    public void setHistoryBorrow(String historyBorrow) {
+        this.historyBorrow = historyBorrow;
+    }
+
     @Override
     public String toString() {
         return "UserSecret{" +
@@ -97,6 +117,8 @@ public class UserSecret {
                 ", name='" + name + '\'' +
                 ", created_at=" + created_at +
                 ", sex='" + sex + '\'' +
+                ", borrow='" + borrow + '\'' +
+                ", historyBorrow='" + historyBorrow + '\'' +
                 '}';
     }
 }

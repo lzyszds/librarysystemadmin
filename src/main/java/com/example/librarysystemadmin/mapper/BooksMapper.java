@@ -3,27 +3,27 @@ package com.example.librarysystemadmin.mapper;
 
 import com.example.librarysystemadmin.domain.Book;
 import com.example.librarysystemadmin.domain.BookCategories;
-import com.example.librarysystemadmin.domain.BookWithCategory;
+import com.example.librarysystemadmin.domain.CategoryCopiesBook;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface BooksMapper {
 
-    @Select("SELECT book_id, book_name, author, cover,publisher, publish_date, isbn, introduction, c.category_name,c.category_id, status\n" +
+    @Select("SELECT book_id, book_name, author, cover,publisher, publish_date, isbn, introduction, c.category_name,c.category_id, is_borrowable\n" +
             "FROM books b LEFT JOIN categories c ON b.category_id = c.category_id WHERE book_name like '%${search}%' or author like '%${search}%' or " +
             "publisher like '%${search}%' or isbn like '%${search}%' or introduction like '%${search}%' LIMIT #{page}, #{limit} ;")
-    BookWithCategory[] getBookList(String search, int page, int limit);
+    CategoryCopiesBook[] getBookList(String search, int page, int limit);
 
     @Select("SELECT count(*) FROM books where book_name like '%${search}%' or author like '%${search}%' or " +
             "publisher like '%${search}%' or isbn like '%${search}%' or introduction like '%${search}%'")
     int getBookCount(String search);
 
-    @Insert("INSERT INTO books (book_name, author, cover, publisher, publish_date, isbn, introduction, category_id, status) " +
-            "VALUES (#{book_name}, #{author}, #{cover}, #{publisher}, #{publish_date}, #{isbn}, #{introduction}, #{category_id}, #{status})")
+    @Insert("INSERT INTO books (book_name, author, cover, publisher, publish_date, isbn, introduction, category_id, is_borrowable) " +
+            "VALUES (#{book_name}, #{author}, #{cover}, #{publisher}, #{publish_date}, #{isbn}, #{introduction}, #{category_id}, #{is_borrowable})")
     int saveBookInfo(Book book);
 
     @Update("UPDATE books SET book_name = #{book_name}, author = #{author}, cover = #{cover}, publisher = #{publisher}, publish_date = #{publish_date}, " +
-            "isbn = #{isbn}, introduction = #{introduction}, category_id = #{category_id}, status = #{status} WHERE book_id = #{book_id}")
+            "isbn = #{isbn}, introduction = #{introduction}, category_id = #{category_id}, is_borrowable = #{is_borrowable} WHERE book_id = #{book_id}")
     int updateBookInfo(Book book);
 
     //查询ISBN是否存在 对比名称来说，ISBN是唯一的 就是同一本书 名称相同但是出版社不是一家的书 就不算数一本书
@@ -52,7 +52,7 @@ public interface BooksMapper {
 
     //查询最后插入的分类id
     @Select("SELECT LAST_INSERT_ID()")
-    int getLastInsertedCategoryId();
+    long getLastInsertedCategoryId();
 
     //删除图书分类
     @Delete("DELETE FROM categories WHERE category_id in (${category_id})")

@@ -12,7 +12,9 @@ public interface UsersService {
 
     int getUserListCount(String search);
 
-    String getUserById(String id);
+    User[] getUserById(String id);
+
+    String getUserNameById(String id);
 
     int voucherRole(String username);
 

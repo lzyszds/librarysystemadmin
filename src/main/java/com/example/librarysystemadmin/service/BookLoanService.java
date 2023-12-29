@@ -9,4 +9,6 @@ public interface BookLoanService {
     int getBorrowBookListCount(String search);
 
     String borrowingBook(String bookId, String token);
+
+    String returnBook(String bookId, String token);
 }

@@ -1,21 +1,31 @@
 package com.example.librarysystemadmin.service.impl;
 
-import com.example.librarysystemadmin.domain.Book;
-import com.example.librarysystemadmin.domain.BookCategories;
-import com.example.librarysystemadmin.domain.BookWithCategory;
-import com.example.librarysystemadmin.domain.BookLoan;
+import com.example.librarysystemadmin.domain.*;
+import com.example.librarysystemadmin.mapper.BookCopiesMapper;
+import com.example.librarysystemadmin.mapper.BookLoanMapper;
 import com.example.librarysystemadmin.mapper.BooksMapper;
 import com.example.librarysystemadmin.service.BooksService;
 import com.example.librarysystemadmin.utils.ApiResponse;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BooksServiceImpl implements BooksService {
+
+    private static final Log log = LogFactory.getLog(BooksServiceImpl.class);
+
     @Autowired
     private BooksMapper booksMapper;
 
-    public BookWithCategory[] getBookList(String search, int page, int limit) {
+    @Autowired
+    private BookLoanMapper bookLoanMapper;
+
+    @Autowired
+    private BookCopiesMapper bookCopiesMapper;
+
+    public CategoryCopiesBook[] getBookList(String search, int page, int limit) {
         return booksMapper.getBookList(search, page, limit);
     }
 
@@ -45,7 +55,7 @@ public class BooksServiceImpl implements BooksService {
         return null;
     }
 
-    public ApiResponse<String> saveBookInfo(Book book) {
+    public ApiResponse<String> saveBookInfo(FetchBook book) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         // 判断是添加还是修改
         Boolean requestType = book.getBook_id() == null;
@@ -60,15 +70,29 @@ public class BooksServiceImpl implements BooksService {
         if (book.getIntroduction() == null) {
             book.setIntroduction("");
         }
+
         //新增书籍
         if (requestType) {
-            //初始设置书籍状态为未借出
-            book.setStatus(0);
             // 检查ISBN是否已经存在
             if (booksMapper.findByIdIsbn(book.getIsbn()) > 0) {
                 apiResponse.setErrorResponse(500, "ISBN已存在");
             }
             if (booksMapper.saveBookInfo(book) == 1) {
+                //获取当前插入书籍的ID
+                long newId = booksMapper.getLastInsertedCategoryId();
+                // 添加书籍成功后，根据copies_Number来添加书籍副本
+                BookCopies[] bookCopiesArray = new BookCopies[book.getCopies_number()];
+
+                for (int i = 0; i < book.getCopies_number(); i++) {
+                    BookCopies bookCopies = new BookCopies();
+                    bookCopies.setBook_id(newId);
+                    bookCopies.setCopy_id(book.getIsbn() + "_" + (i + 1));
+                    bookCopies.setStatus(book.getIs_borrowable());
+                    bookCopiesArray[i] = bookCopies;
+                }
+
+                System.out.println(bookCopiesMapper.addBookCopies(bookCopiesArray));
+
                 apiResponse.setSuccessResponse("添加成功");
             } else {
                 apiResponse.setErrorResponse(500, "添加失败");
@@ -109,12 +133,21 @@ public class BooksServiceImpl implements BooksService {
         if (result == 0) {
             apiResponse.setErrorResponse(400, "书籍不存在");
         } else {
-            // 删除书籍
-            if (booksMapper.devastateBook(book_id) == 1) {
-                apiResponse.setSuccessResponse("删除成功");
+            //先确定当前书籍是否被借出 将关于当前书籍的借阅记录删除
+            if (bookLoanMapper.getBookLoanList(book_id) > 0) {
+                throw new RuntimeException("当前书籍已被借出,请先收回,无法删除");
             } else {
+                bookLoanMapper.deleteBookLoan(book_id);
+            }
+            //先检查当前图书是否有副本 删除书籍副本
+            if (bookCopiesMapper.getBookCopiesList(book_id) > 0) {
+                bookCopiesMapper.deleteBookCopies(book_id);
+            }
+            // 删除书籍
+            if (booksMapper.devastateBook(book_id) < 1) {
                 throw new RuntimeException("删除失败");
             }
+            apiResponse.setSuccessResponse("删除成功");
         }
         return apiResponse;
     }
@@ -141,7 +174,7 @@ public class BooksServiceImpl implements BooksService {
             apiResponse.setErrorResponse(500, "添加失败");
         }
         // 添加分类 并返回当前添加分类的ID
-        apiResponse.setSuccessResponse(Integer.toString(booksMapper.getLastInsertedCategoryId()));
+        apiResponse.setSuccessResponse(String.valueOf(booksMapper.getLastInsertedCategoryId()));
         return apiResponse;
     }
 
@@ -166,8 +199,6 @@ public class BooksServiceImpl implements BooksService {
         }
         return apiResponse;
     }
-
-
 
 
 }

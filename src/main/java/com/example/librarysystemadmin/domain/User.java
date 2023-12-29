@@ -16,6 +16,10 @@ public class User {
 
     private String sex;
 
+    private String borrow; // 当前借阅
+
+    private String historyBorrow; // 历史借阅
+
     public String getUsername() {
         return username;
     }
@@ -104,6 +108,22 @@ public class User {
         this.sex = sex;
     }
 
+    public String getBorrow() {
+        return borrow;
+    }
+
+    public void setBorrow(String borrow) {
+        this.borrow = borrow;
+    }
+
+    public String getHistoryBorrow() {
+        return historyBorrow;
+    }
+
+    public void setHistoryBorrow(String historyBorrow) {
+        this.historyBorrow = historyBorrow;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -118,6 +138,8 @@ public class User {
                 ", created_at=" + created_at +
                 ", token='" + token + '\'' +
                 ", sex='" + sex + '\'' +
+                ", borrow='" + borrow + '\'' +
+                ", historyBorrow='" + historyBorrow + '\'' +
                 '}';
     }
 }

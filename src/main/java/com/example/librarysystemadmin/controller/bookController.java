@@ -1,10 +1,7 @@
 package com.example.librarysystemadmin.controller;
 
 
-import com.example.librarysystemadmin.domain.Book;
-import com.example.librarysystemadmin.domain.BookCategories;
-import com.example.librarysystemadmin.domain.BookWithCategory;
-import com.example.librarysystemadmin.domain.ListDataCount;
+import com.example.librarysystemadmin.domain.*;
 import com.example.librarysystemadmin.service.BooksService;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import com.example.librarysystemadmin.utils.ProcessFiles;
@@ -25,12 +22,12 @@ public class bookController {
     private BooksService booksService;
 
     @RequestMapping("/getBookList")
-    public ApiResponse<ListDataCount<BookWithCategory[]>> getBookList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "10") int limit, @RequestParam(required = false, defaultValue = "") String search) {
+    public ApiResponse<ListDataCount<CategoryCopiesBook[]>> getBookList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "10") int limit, @RequestParam(required = false, defaultValue = "") String search) {
 
-        ApiResponse<ListDataCount<BookWithCategory[]>> apiResponse = new ApiResponse<>();
-        ListDataCount<BookWithCategory[]> listDataCount = new ListDataCount<>();
+        ApiResponse<ListDataCount<CategoryCopiesBook[]>> apiResponse = new ApiResponse<>();
+        ListDataCount<CategoryCopiesBook[]> listDataCount = new ListDataCount<>();
 
-        BookWithCategory[] books = booksService.getBookList(search, (page - 1) * limit, limit);
+        CategoryCopiesBook[] books = booksService.getBookList(search, (page - 1) * limit, limit);
         int count = booksService.getBookCount(search);
         listDataCount.setCount(count);
         listDataCount.setData(books);
@@ -40,12 +37,14 @@ public class bookController {
 
 
     @PostMapping("/saveBookInfo")
-    public ApiResponse<String> addBook(@RequestBody Book param) {
+    public ApiResponse<String> addBook(@RequestBody FetchBook param) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         try {
             apiResponse = booksService.saveBookInfo(param);
         } catch (Exception e) {
+
             apiResponse.setErrorResponse(500, "操作错误", "/Api/Book/saveBookInfo", e);
+
         }
         return apiResponse;
     }
