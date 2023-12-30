@@ -1,5 +1,6 @@
 package com.example.librarysystemadmin.mapper;
 
+import com.example.librarysystemadmin.domain.Statistic;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -33,8 +34,10 @@ public interface StatisticsLogMapper {
     @Update("UPDATE statistics_log SET books_returned_count = books_returned_count+1 WHERE log_date = #{date}")
     int updateBooksReturnedCount(Date date);
 
-    @Select("SELECT * FROM statistics_log")
-    int getStatisticsLog(Date date);
+    @Select("SELECT id as logId,log_date as logDate,new_users_count as newUsersCount,new_books_count as newBooksCount," +
+            "books_borrowed_count as booksBorrowedCount, books_returned_count as booksReturnedCount ," +
+            "visits_count as visitsCount FROM statistics_log ORDER BY log_date DESC LIMIT #{limit}")
+    Statistic[] getStatisticsLog(int limit);
 
     @Select("SELECT * FROM statistics_log WHERE log_date = #{date}")
     int getStatisticsLogByDate(Date date);

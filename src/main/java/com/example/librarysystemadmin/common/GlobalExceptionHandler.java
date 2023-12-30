@@ -42,8 +42,9 @@ public class GlobalExceptionHandler {
         log.error(redColorCode + "===========全局统一异常处理============");
 
         log.error(getExceptionInfo(e) + resetColorCode);
+
         // 打印 SQL 语句
-        return new ApiResponse<>(500, "error", getExceptionInfo(e));
+        return new ApiResponse<>(500, "error", "服务器内部错误");
     }
 
     private static String getExceptionInfo(Exception ex) {

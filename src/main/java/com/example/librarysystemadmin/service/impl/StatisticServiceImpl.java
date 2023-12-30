@@ -1,6 +1,7 @@
 package com.example.librarysystemadmin.service.impl;
 
 
+import com.example.librarysystemadmin.domain.Statistic;
 import com.example.librarysystemadmin.mapper.StatisticsLogMapper;
 import com.example.librarysystemadmin.service.StatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,9 @@ public class StatisticServiceImpl implements StatisticService {
                 statisticsLogMapper.updateVisitsCount(newDate);
                 break;
         }
+    }
+
+    public Statistic[] getLogList(int limit) {
+        return statisticsLogMapper.getStatisticsLog(limit);
     }
 }

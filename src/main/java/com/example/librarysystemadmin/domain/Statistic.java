@@ -1,34 +1,39 @@
 package com.example.librarysystemadmin.domain;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.sql.Date;
 
+@Entity
+@Table(name = "statistics_log")
 public class Statistic {
-    int id;
+
+    @Id
+    @Column(name = "id")
+    private int logId;
 
     @Column(name = "log_date")
-    Date logDate;
+    private Date logDate;
 
     @Column(name = "new_users_count")
-    int newUsersCount;
+    private int newUsersCount;
 
     @Column(name = "new_books_count")
-    int newBooksCount;
+    private int newBooksCount;
 
     @Column(name = "books_borrowed_count")
-    int booksBorrowedCount;
+    private int booksBorrowedCount;
 
     @Column(name = "books_returned_count")
-    int booksReturnedCount;
+    private int booksReturnedCount;
     @Column(name = "visits_count")
-    int visitsCount;
+    private int visitsCount;
 
-    public int getId() {
-        return id;
+    public int getLog_id() {
+        return logId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLog_id(int log_id) {
+        this.logId = log_id;
     }
 
     public Date getLogDate() {
@@ -82,7 +87,7 @@ public class Statistic {
     @Override
     public String toString() {
         return "Statistic{" +
-                "id=" + id +
+                "log_id=" + logId +
                 ", logDate=" + logDate +
                 ", newUsersCount=" + newUsersCount +
                 ", newBooksCount=" + newBooksCount +
