@@ -52,7 +52,7 @@ public interface BooksMapper {
 
     //查询最后插入的分类id
     @Select("SELECT LAST_INSERT_ID()")
-    long getLastInsertedCategoryId();
+    int getLastInsertedCategoryId();
 
     //删除图书分类
     @Delete("DELETE FROM categories WHERE category_id in (${category_id})")

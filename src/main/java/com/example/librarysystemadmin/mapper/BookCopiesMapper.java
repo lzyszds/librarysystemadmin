@@ -25,9 +25,20 @@ public interface BookCopiesMapper {
     int deleteBookCopies(String book_id);
 
     /*
-    *   查询图书副本是否存在
-    * */
+     *   查询图书副本是否存在
+     * */
     @Select("SELECT COUNT(*) FROM book_copies WHERE book_id in (#{book_id})")
     int getBookCopiesList(String book_id);
 
+    /*
+     * 查询copyid的书籍是否被借出
+     * */
+    @Select("SELECT * FROM book_copies where copy_id =#{copyId}")
+    BookCopies getCopiesByCopyId(String copyId);
+
+    /*
+     * 设置书籍副本状态 0未借出 1已借出
+     * */
+    @Update("UPDATE book_copies SET status = #{status} WHERE copy_id = #{copyid}")
+    void setBookCopiesStatus(String copyid, String status);
 }

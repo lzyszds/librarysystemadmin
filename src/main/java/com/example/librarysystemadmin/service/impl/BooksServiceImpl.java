@@ -79,14 +79,14 @@ public class BooksServiceImpl implements BooksService {
             }
             if (booksMapper.saveBookInfo(book) == 1) {
                 //获取当前插入书籍的ID
-                long newId = booksMapper.getLastInsertedCategoryId();
+                int newId = booksMapper.getLastInsertedCategoryId();
                 // 添加书籍成功后，根据copies_Number来添加书籍副本
                 BookCopies[] bookCopiesArray = new BookCopies[book.getCopies_number()];
 
                 for (int i = 0; i < book.getCopies_number(); i++) {
                     BookCopies bookCopies = new BookCopies();
                     bookCopies.setBook_id(newId);
-                    bookCopies.setCopy_id(book.getIsbn() + "_" + (i + 1));
+                    bookCopies.setCopy_id(book.getIsbn() + "0725" + (i + 1));
                     bookCopies.setStatus(book.getIs_borrowable());
                     bookCopiesArray[i] = bookCopies;
                 }

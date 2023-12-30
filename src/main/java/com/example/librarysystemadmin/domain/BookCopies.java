@@ -2,7 +2,7 @@ package com.example.librarysystemadmin.domain;
 
 public class BookCopies {
     private String copy_id;
-    private long book_id;
+    private int book_id;
     private long status;
 
     public String getCopy_id() {
@@ -13,11 +13,12 @@ public class BookCopies {
         this.copy_id = copy_id;
     }
 
-    public long getBook_id() {
+    public int getBook_id() {
+
         return book_id;
     }
 
-    public void setBook_id(long book_id) {
+    public void setBook_id(int book_id) {
         this.book_id = book_id;
     }
 

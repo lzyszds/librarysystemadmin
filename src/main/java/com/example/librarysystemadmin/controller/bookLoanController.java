@@ -1,9 +1,7 @@
 package com.example.librarysystemadmin.controller;
 
 
-import com.example.librarysystemadmin.domain.Book;
-import com.example.librarysystemadmin.domain.BookLoanWithBookUser;
-import com.example.librarysystemadmin.domain.ListDataCount;
+import com.example.librarysystemadmin.domain.*;
 import com.example.librarysystemadmin.service.BookLoanService;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +53,11 @@ public class bookLoanController {
      *  借书接口
      * */
     @PostMapping("/borrowingBook")
-    public ApiResponse<String> borrowingBook(@RequestBody Book param, HttpServletRequest request) {
+    public ApiResponse<String> borrowingBook(@RequestBody BookCopies param, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         Cookie[] tokens = request.getCookies();
         String token = getToken(tokens);
-        String result = bookLoanService.borrowingBook(param.getBook_id().toString(), token);
+        String result = bookLoanService.borrowingBook(param, token);
         if (result == null) {
             apiResponse.setSuccessResponse("借阅成功");
         } else {
