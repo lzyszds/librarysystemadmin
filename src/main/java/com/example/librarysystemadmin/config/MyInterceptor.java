@@ -2,7 +2,6 @@ package com.example.librarysystemadmin.config;
 
 
 import com.example.librarysystemadmin.service.UsersService;
-import com.example.librarysystemadmin.utils.RSAUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -56,12 +55,16 @@ public class MyInterceptor implements HandlerInterceptor {
             if ("token".equals(cookie.getName())) {
                 // 获取 Cookie 的值
                 String tokenValue = cookie.getValue();
-                //解密token 获取用户名
-                String username = RSAUtils.decrypt(tokenValue);
-                if (username == null) return voucher;
+                Integer role = usersService.voucherRole(tokenValue);
                 //查询用户角色
-                if (usersService.voucherRole(username) == 0) voucher = true;
-
+                if (role == null) {
+                    return voucher;
+                }
+                if (role == 0) {
+                    voucher = true;
+                } else {
+                    voucher = false;
+                }
             }
         }
         return voucher;

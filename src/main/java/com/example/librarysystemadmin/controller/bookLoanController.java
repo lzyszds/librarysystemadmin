@@ -1,9 +1,13 @@
 package com.example.librarysystemadmin.controller;
 
 
-import com.example.librarysystemadmin.domain.*;
+import com.example.librarysystemadmin.domain.Book;
+import com.example.librarysystemadmin.domain.BookCopies;
+import com.example.librarysystemadmin.domain.BookLoanWithBookUser;
+import com.example.librarysystemadmin.domain.ListDataCount;
 import com.example.librarysystemadmin.service.BookLoanService;
 import com.example.librarysystemadmin.utils.ApiResponse;
+import com.example.librarysystemadmin.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,19 +22,7 @@ public class bookLoanController {
     @Autowired
     BookLoanService bookLoanService;
 
-
-    /*
-     * 从cookie中遍历取出 获取token
-     * */
-    private String getToken(Cookie[] tokens) {
-        String token = null;
-        for (Cookie item : tokens) {
-            if (item.getName().equals("token")) {
-                token = item.getValue();
-            }
-        }
-        return token;
-    }
+    TokenUtils TokenUtils;
 
     /*
      * 获取图书借阅列表
@@ -56,7 +48,7 @@ public class bookLoanController {
     public ApiResponse<String> borrowingBook(@RequestBody BookCopies param, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         Cookie[] tokens = request.getCookies();
-        String token = getToken(tokens);
+        String token = TokenUtils.getToken(tokens);
         String result = bookLoanService.borrowingBook(param, token);
         if (result == null) {
             apiResponse.setSuccessResponse("借阅成功");
@@ -74,7 +66,7 @@ public class bookLoanController {
     public ApiResponse<String> returnBook(@RequestBody Book param, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         Cookie[] tokens = request.getCookies();
-        String token = getToken(tokens);
+        String token = TokenUtils.getToken(tokens);
         String result = bookLoanService.returnBook(param.getBook_id().toString(), token);
         if (result == null) {
             apiResponse.setSuccessResponse("归还成功");

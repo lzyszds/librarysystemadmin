@@ -32,8 +32,11 @@ public interface UsersMapper {
     User[] getUserByid(String id);
 
     // 根据用户名获取用户角色
-    @Select("SELECT role from users where username = #{username}")
-    int voucherRole(String username);
+    @Select("SELECT role from users where token = #{token} ")
+    Integer voucherRole(String token);
+
+    @Select("SELECT role from users where id = #{id} ")
+    int voucherIdRole(String id);
 
     // 根据token获取用户信息
     @Select("SELECT * FROM users WHERE token = #{token}")
@@ -47,12 +50,12 @@ public interface UsersMapper {
     int devastateUser(String id);
 
     // 重置密码
-    @Update("UPDATE users SET password = #{password} , token = #{password} WHERE id = #{id}")
-    int resetPassword(String id, String password);
+    @Update("UPDATE users SET password = #{password} , token = #{token} WHERE id = #{id}")
+    void resetPassword(String id, String password, String token);
 
     // 修改用户信息（管理）
     @Update("UPDATE users SET name=#{name}, email=#{email}, phone=#{phone}, role=#{role}, sex=#{sex}, address=#{address} WHERE id=#{id} ")
-    int updateUserListInfoAdmin(String id, String name, String email, String phone, String role, String sex, String address);
+    int updateUserListInfo(String id, String name, String email, String phone, String role, String sex, String address);
 
     @Update("UPDATE users SET borrow=#{borrow} WHERE id=#{id}")
     void updateBorrowCount(int id, String borrow);
