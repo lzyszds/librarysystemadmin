@@ -65,11 +65,34 @@ public class bookController {
         return booksService.addBooksExcel(file);
     }
 
+    //获取热门图书接口
+    @RequestMapping("/getHotBookList")
+    public ApiResponse<CategoryCopiesBook[]> getHotBookList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "5") int limit) {
+        return booksService.getHotBookList(page, limit);
+    }
+
     //新书抢鲜接口
     @RequestMapping("/getNewBookList")
     public ApiResponse<CategoryCopiesBook[]> getNewBookList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "5") int limit) {
 
         return booksService.getNewBookList(page, limit);
+    }
+
+    //指定某一字段名进行模糊查询 并返回图书列表
+    @RequestMapping("/getBookListByField")
+    public ApiResponse<CategoryCopiesBook[]> getBookListByField(
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "5") int limit,
+            @RequestParam(required = false, defaultValue = "") String search,
+            @RequestParam(required = false, defaultValue = "") String field
+    ) {
+        return booksService.getBookListByField(search, field, page, limit);
+    }
+
+    //获取分类书籍量最大的分类前n项
+    @RequestMapping("/getTopNCategories")
+    public ApiResponse<BookCategories[]> getTopNCategories(@RequestParam(required = false, defaultValue = "5") int limit) {
+        return booksService.getTopNCategories(limit);
     }
 
     //获取图书详情

@@ -1,9 +1,6 @@
 package com.example.librarysystemadmin.service;
 
-import com.example.librarysystemadmin.domain.BookCategories;
-import com.example.librarysystemadmin.domain.CategoryCopiesBook;
-import com.example.librarysystemadmin.domain.FetchBook;
-import com.example.librarysystemadmin.domain.ListDataCount;
+import com.example.librarysystemadmin.domain.*;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +23,13 @@ public interface BooksService {
 
     ApiResponse<String> addBooksExcel(MultipartFile file);
 
+    ApiResponse<CategoryCopiesBook[]> getHotBookList(int page, int limit);
+
     ApiResponse<CategoryCopiesBook[]> getNewBookList(int page, int limit);
+
+    ApiResponse<CategoryCopiesBook[]> getBookListByField(String search, String field, int page, int limit);
+
+    ApiResponse<BookCategories[]> getTopNCategories(int n);
 
     ApiResponse<CategoryCopiesBook> getBookInfo(String book_id);
 

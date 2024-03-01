@@ -24,6 +24,9 @@ public class Book {
     //书籍状态 0：可以外借 1：只能馆内阅读
     private int is_borrowable;
 
+    private int borrowing_volume;
+
+
     public Long getBook_id() {
         return book_id;
     }
@@ -104,6 +107,14 @@ public class Book {
         this.is_borrowable = is_borrowable;
     }
 
+    public int getBorrowing_volume() {
+        return borrowing_volume;
+    }
+
+    public void setBorrowing_volume(int borrowing_volume) {
+        this.borrowing_volume = borrowing_volume;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -117,6 +128,7 @@ public class Book {
                 ", isbn='" + isbn + '\'' +
                 ", category_id=" + category_id +
                 ", is_borrowable=" + is_borrowable +
+                ", borrowing_volume=" + borrowing_volume +
                 '}';
     }
 }

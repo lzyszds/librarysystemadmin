@@ -1,16 +1,13 @@
 package com.example.librarysystemadmin.config;
 
 
-import com.example.librarysystemadmin.domain.InterceptorArr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -22,7 +19,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         String[] user = {"login", "register"};
-        String[] book = {"getBookList", "getBookInfo", "getNewBookList"};
+        String[] book = {
+                "getBookList",
+                "getBookInfo",
+                "getHotBookList",
+                "getNewBookList",
+                "getBookListByField",
+                "getTopNCategories",
+        };
         String[] util = {"captcha"};
 
         // 将数组转换为一个由逗号分隔的路径字符串，并传递给excludePathPatterns

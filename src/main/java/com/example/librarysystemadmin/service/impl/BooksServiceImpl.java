@@ -49,6 +49,9 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 获取图书列表
+     * @param search 查询字段
+     * @param page 当前页
+     * @param limit 每页显示条数
      * 1.获取图书总数
      * 2.获取图书列表
      * 3.返回结果
@@ -59,6 +62,8 @@ public class BooksServiceImpl implements BooksService {
 
         try {
             listDataCount.setCount(booksMapper.getBookCount(search));
+            page = (page - 1) * limit;
+            limit = page + limit;
             listDataCount.setData(booksMapper.getBookList(search, page, limit));
             apiResponse.setSuccessResponse(listDataCount);
         } catch (Exception e) {
@@ -73,6 +78,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 参数验证
+     * @param book 书籍信息
      * 1.书名不能为空
      * 2.作者不能为空
      * 3.分类不能为空
@@ -115,6 +121,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      *  保存书籍信息
+     * @param book 书籍信息
      * 1.判断是添加还是修改
      * 2.参数验证
      * 3.简介可以为空
@@ -198,6 +205,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 上传图书封面
+     * @param file 上传的文件
      * 1.验证文件信息
      * 2.获取文件名
      * 3.获取文件的md5值（16进制） 防止上传重复文件或者文件名重复
@@ -250,6 +258,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 删除书籍
+     * @param book_id 书籍ID
      * 1.参数验证
      * 2.检查书籍是否存在
      * 3.先确定当前书籍是否被借出 将关于当前书籍的借阅记录删除
@@ -294,6 +303,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 获取图书分类列表
+     * @param search 查询字段
      * 1.返回结果
      * */
     public ApiResponse<BookCategories[]> getBookCategoryList(String search) {
@@ -308,6 +318,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 添加图书分类
+     * @param category_name 分类名称
      * 1.参数验证
      * 2.检查分类是否已经存在
      * 3.添加分类 并返回当前添加分类的ID
@@ -337,6 +348,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 删除图书分类
+     * @param id 分类ID
      * 1.参数验证
      * 2.检查分类是否存在
      * 3.删除分类
@@ -366,6 +378,7 @@ public class BooksServiceImpl implements BooksService {
 
     /*
      * 通过excel导入图书
+     * @param file 上传的文件
      * 1.读取excel文件
      * 2.读取第一个工作表
      * 3.获取行数
@@ -414,10 +427,37 @@ public class BooksServiceImpl implements BooksService {
         return apiResponse;
     }
 
+    /*
+     * 获取热门图书接口
+     * @param page 当前页
+     * @param limit 每页显示条数
+     * 1.获取热门图书列表
+     * 2.返回结果
+     * */
+    public ApiResponse<CategoryCopiesBook[]> getHotBookList(int page, int limit) {
+        ApiResponse<CategoryCopiesBook[]> apiResponse = new ApiResponse<>();
+        try {
+            page = (page - 1) * limit;
+            limit = page + limit;
+            apiResponse.setSuccessResponse(booksMapper.getHotBookList(page, limit));
+        } catch (Exception e) {
+            apiResponse.setErrorResponse(500, "文件上传失败");
+        }
+        return apiResponse;
+    }
 
+    /*
+     * 获取热门图书接口
+     * @param page 当前页
+     * @param limit 每页显示条数
+     * 1.获取热门图书列表
+     * 2.返回结果
+     * */
     public ApiResponse<CategoryCopiesBook[]> getNewBookList(int page, int limit) {
         ApiResponse<CategoryCopiesBook[]> apiResponse = new ApiResponse<>();
         try {
+            page = (page - 1) * limit;
+            limit = page + limit;
             apiResponse.setSuccessResponse(booksMapper.getNewBookList(page, limit));
         } catch (Exception e) {
             apiResponse.setErrorResponse(500, "文件上传失败");
@@ -426,7 +466,52 @@ public class BooksServiceImpl implements BooksService {
     }
 
     /*
+     * 指定某一字段名进行查询 并返回图书列表(非模糊查询)
+     * @param search 查询字段
+     * @param page 当前页
+     * @param limit 每页显示条数
+     * @param column_name 查询字段名
+     * 1.获取图书列表
+     * 2.返回结果
+     * */
+    public ApiResponse<CategoryCopiesBook[]> getBookListByField(String search, String field, int page, int limit) {
+        ApiResponse<CategoryCopiesBook[]> apiResponse = new ApiResponse<>();
+        //检查字段名field是否存在
+        if (field == null || field.equals("")) {
+            apiResponse.setErrorResponse(400, "字段名不能为空,必须为book_name,author,publisher,isbn,introduction,category_name等其中之一");
+            return apiResponse;
+        }
+        if (search == null || search.equals("")) {
+            apiResponse.setErrorResponse(400, "查询字段不能为空");
+            return apiResponse;
+        }
+        try {
+            page = (page - 1) * limit;
+            limit = page + limit;
+            System.out.println(search + field + page + limit);
+            apiResponse.setSuccessResponse(booksMapper.getBookListByField(search, field, page, limit));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            apiResponse.setErrorResponse(500, "查询失败");
+        }
+        return apiResponse;
+    }
+
+    public ApiResponse<BookCategories[]> getTopNCategories(int n) {
+        ApiResponse<BookCategories[]> apiResponse = new ApiResponse<>();
+
+        try {
+            apiResponse.setSuccessResponse(booksMapper.getTopNCategories(n));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            apiResponse.setErrorResponse(500, "查询失败");
+        }
+        return apiResponse;
+    }
+
+    /*
      * 获取图书详情
+     * @param book_id 书籍ID
      * 1.参数验证
      * 2.检查书籍是否存在
      * 3.获取书籍信息
