@@ -4,7 +4,7 @@ public class CategoryCopiesBook extends Book {
 
     private String category_name;
 
-    private int copiesId;
+    private int copy_id;
 
     public String getCategory_name() {
         return category_name;
@@ -15,20 +15,19 @@ public class CategoryCopiesBook extends Book {
     }
 
 
-
-    public int getCopiesId() {
-        return copiesId;
+    public int getCopy_id() {
+        return copy_id;
     }
 
-    public void setCopiesId(int copiesId) {
-        this.copiesId = copiesId;
+    public void setCopy_id(int copy_id) {
+        this.copy_id = copy_id;
     }
 
     @Override
     public String toString() {
         return "CategoryCopiesBook{" +
                 "category_name='" + category_name + '\'' +
-                ", copiesId=" + copiesId +
+                ", copy_id=" + copy_id +
                 '}';
     }
 }

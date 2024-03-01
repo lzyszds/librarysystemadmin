@@ -6,10 +6,17 @@ import com.example.librarysystemadmin.mapper.BookLoanMapper;
 import com.example.librarysystemadmin.mapper.BooksMapper;
 import com.example.librarysystemadmin.service.BooksService;
 import com.example.librarysystemadmin.utils.ApiResponse;
+import com.example.librarysystemadmin.utils.FormatExcelData;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Component
 public class BooksServiceImpl implements BooksService {
@@ -200,5 +207,62 @@ public class BooksServiceImpl implements BooksService {
         return apiResponse;
     }
 
+    // 通过excel导入图书
+    public ApiResponse<String> addBooksExcel(MultipartFile file) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        try {
+            // 读取excel文件
+            XSSFWorkbook xssfworkbook = new XSSFWorkbook(file.getInputStream());
+            // 读取第一个工作表
+            XSSFSheet sheet = xssfworkbook.getSheetAt(0);
+            // 获取行数
+            int rows = sheet.getPhysicalNumberOfRows();
+            // 获取列数
+            int cells = sheet.getRow(0).getPhysicalNumberOfCells();
+            FetchBook[] books = FormatExcelData.getData(rows, cells, sheet, booksMapper);
+            System.out.printf("第%d行数据：%s\n", books);
+            String message = "";
+            //遍历数组 插入数据库
+            for (FetchBook book : books) {
+                // 检查ISBN是否已经存在
+                if (booksMapper.findByIdIsbn(book.getIsbn()) > 0) {
+                    message += "ISBN:" + book.getIsbn() + "已存在;";
+                    continue;
+                } else {
+                    //新增书籍
+                    if (booksMapper.saveBookInfo(book) == 1) {
+                        //添加书籍成功
+                        message += "ISBN:" + book.getIsbn() + "添加成功;";
+                    } else {
+                        message += "ISBN:" + book.getIsbn() + "添加失败;";
+                    }
+                }
+            }
+            apiResponse.setSuccessResponse(message);
+        } catch (Exception e) {
+            System.out.print(e);
+            apiResponse.setErrorResponse(500, "文件上传失败");
+        }
 
+        return apiResponse;
+    }
+
+    public ApiResponse<CategoryCopiesBook> getBookInfo(String book_id) {
+        ApiResponse<CategoryCopiesBook> apiResponse = new ApiResponse<>();
+        // 参数验证
+        if (book_id == null) {
+            apiResponse.setErrorResponse(400, "书籍ID不能为空");
+            return apiResponse;
+        }
+        // 检查书籍是否存在
+        int result = booksMapper.findById(book_id);
+        if (result == 0) {
+            apiResponse.setErrorResponse(400, "书籍不存在");
+        } else {
+            // 获取书籍信息
+            CategoryCopiesBook book = booksMapper.getBookInfo(book_id);
+            apiResponse.setSuccessResponse(book);
+        }
+        return apiResponse;
+    }
 }

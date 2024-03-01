@@ -4,6 +4,7 @@ package com.example.librarysystemadmin.mapper;
 import com.example.librarysystemadmin.domain.Book;
 import com.example.librarysystemadmin.domain.BookCategories;
 import com.example.librarysystemadmin.domain.CategoryCopiesBook;
+import com.example.librarysystemadmin.domain.FetchBook;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -46,6 +47,10 @@ public interface BooksMapper {
     @Select("SELECT count(*) FROM categories where category_id = #{category_id}")
     int getBookCategoryListById(String category_id);
 
+    //检查分类是否存在 名称 并返回id
+    @Select("SELECT category_id FROM categories where category_name = #{category_name}")
+    String getBookCategoryListByName(String category_name);
+
     //添加图书分类 并返回自增id
     @Insert("INSERT INTO categories (category_name) VALUES (#{category_name})")
     int addBookCategory(String category_name);
@@ -58,5 +63,7 @@ public interface BooksMapper {
     @Delete("DELETE FROM categories WHERE category_id in (${category_id})")
     int devastateBookCategory(String category_id);
 
-
+    //查询图书信息
+    @Select("SELECT * FROM books LEFT JOIN categories c ON books.category_id = c.category_id WHERE book_id = #{book_id} ")
+    CategoryCopiesBook getBookInfo(String book_id);
 }
