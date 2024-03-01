@@ -77,7 +77,8 @@ public interface BooksMapper {
     //获取分类书籍量最大的分类前n项
     @Select("SELECT c.category_id, c.category_name, count(*) as count \n" +
             "FROM books LEFT JOIN categories c ON books.category_id = c.category_id \n" +
-            "GROUP BY c.category_id \n" +
+            "WHERE c.category_name <> '小说' \n" +
+            "GROUP BY c.category_id  \n" +
             "ORDER BY count \n" +
             "DESC LIMIT #{book_id}")
     BookCategories[] getTopNCategories(int n);

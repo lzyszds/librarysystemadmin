@@ -309,7 +309,7 @@ public class BooksServiceImpl implements BooksService {
     public ApiResponse<BookCategories[]> getBookCategoryList(String search) {
         ApiResponse<BookCategories[]> apiResponse = new ApiResponse<>();
         try {
-            apiResponse.setSuccessResponse(booksMapper.getBookCategoryList(search));
+            apiResponse.setSuccessResponse(booksMapper.getBookCategoryList(search.equals("") ? "%" : search));
         } catch (Exception e) {
             apiResponse.setErrorResponse(500, "查询失败");
         }
@@ -497,6 +497,12 @@ public class BooksServiceImpl implements BooksService {
         return apiResponse;
     }
 
+    /*
+     * 获取分类书籍量最大的分类前n项
+     * @param n 分类数量
+     * 1.获取图书分类
+     * 2.返回结果
+     * */
     public ApiResponse<BookCategories[]> getTopNCategories(int n) {
         ApiResponse<BookCategories[]> apiResponse = new ApiResponse<>();
 
