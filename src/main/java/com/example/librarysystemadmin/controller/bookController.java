@@ -13,6 +13,8 @@ import java.io.File;
 import java.util.Map;
 
 @RestController
+//@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 @RequestMapping("/Api/Book")
 public class bookController {
 
@@ -136,5 +138,28 @@ public class bookController {
         return apiResponse;
     }
 
+    // 通过excel导入图书
+    @PostMapping("/addBooksExcel")
+    public ApiResponse<String> addBooksExcel(@RequestParam("file") MultipartFile file) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        try {
+            apiResponse = booksService.addBooksExcel(file);
+        } catch (Exception e) {
+            apiResponse.setErrorResponse(500, "添加失败", "/Api/Book/addBooksExcel", e);
+        }
+        return apiResponse;
+    }
 
+    //新书抢鲜接口
+    @RequestMapping("/getNewBookList")
+    public ApiResponse<CategoryCopiesBook[]> getNewBookList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "10") int limit, @RequestParam(required = false, defaultValue = "") String search) {
+        ApiResponse<CategoryCopiesBook[]> apiResponse = new ApiResponse<>();
+        return apiResponse;
+    }
+
+    //获取图书详情
+    @RequestMapping("/getBookInfo")
+    public ApiResponse<CategoryCopiesBook> getBookInfo(@RequestParam(required = false, defaultValue = "1") String bookId) {
+        return booksService.getBookInfo(bookId);
+    }
 }
