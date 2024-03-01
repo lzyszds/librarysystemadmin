@@ -63,6 +63,12 @@ public interface BooksMapper {
     @Delete("DELETE FROM categories WHERE category_id in (${category_id})")
     int devastateBookCategory(String category_id);
 
+
+    //获取新书列表
+    @Select("SELECT book_id, book_name, author, cover,publisher, publish_date, isbn, introduction, c.category_name,c.category_id, is_borrowable\n" +
+            "FROM books b LEFT JOIN categories c ON b.category_id = c.category_id ORDER BY publish_date DESC LIMIT #{page}, #{limit} ;")
+    CategoryCopiesBook[] getNewBookList(int page, int limit);
+
     //查询图书信息
     @Select("SELECT * FROM books LEFT JOIN categories c ON books.category_id = c.category_id WHERE book_id = #{book_id} ")
     CategoryCopiesBook getBookInfo(String book_id);
