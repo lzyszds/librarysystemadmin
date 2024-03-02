@@ -63,7 +63,7 @@ public class BooksServiceImpl implements BooksService {
         try {
             listDataCount.setCount(booksMapper.getBookCount(search));
             page = (page - 1) * limit;
-            limit = page + limit;
+
             listDataCount.setData(booksMapper.getBookList(search, page, limit));
             apiResponse.setSuccessResponse(listDataCount);
         } catch (Exception e) {
@@ -400,15 +400,19 @@ public class BooksServiceImpl implements BooksService {
             // 获取列数
             int cells = sheet.getRow(0).getPhysicalNumberOfCells();
             FetchBook[] books = FormatExcelData.getData(rows, cells, sheet, booksMapper);
-            System.out.printf("第%d行数据：%s\n", books);
             String message = "";
             //遍历数组 插入数据库
             for (FetchBook book : books) {
+                if (book == null) {
+                    break;
+                }
                 // 检查ISBN是否已经存在
                 if (booksMapper.findByIdIsbn(book.getIsbn()) > 0) {
                     message += "ISBN:" + book.getIsbn() + "已存在;";
-                    continue;
                 } else {
+                    if (book.getCover() == null || book.getCover().equals("")) {
+                        book.setCover("/uploadFile/coverUndefined.png");
+                    }
                     //新增书籍
                     if (booksMapper.saveBookInfo(book) == 1) {
                         //添加书籍成功
@@ -438,7 +442,7 @@ public class BooksServiceImpl implements BooksService {
         ApiResponse<CategoryCopiesBook[]> apiResponse = new ApiResponse<>();
         try {
             page = (page - 1) * limit;
-            limit = page + limit;
+
             apiResponse.setSuccessResponse(booksMapper.getHotBookList(page, limit));
         } catch (Exception e) {
             apiResponse.setErrorResponse(500, "文件上传失败");
@@ -457,7 +461,7 @@ public class BooksServiceImpl implements BooksService {
         ApiResponse<CategoryCopiesBook[]> apiResponse = new ApiResponse<>();
         try {
             page = (page - 1) * limit;
-            limit = page + limit;
+
             apiResponse.setSuccessResponse(booksMapper.getNewBookList(page, limit));
         } catch (Exception e) {
             apiResponse.setErrorResponse(500, "文件上传失败");
@@ -487,7 +491,7 @@ public class BooksServiceImpl implements BooksService {
         }
         try {
             page = (page - 1) * limit;
-            limit = page + limit;
+
             System.out.println(search + field + page + limit);
             apiResponse.setSuccessResponse(booksMapper.getBookListByField(search, field, page, limit));
         } catch (Exception e) {

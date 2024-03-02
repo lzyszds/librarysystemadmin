@@ -14,23 +14,29 @@ public class FormatExcelData {
         for (int i = 1; i < rows; i++) {
             FetchBook book = new FetchBook();
             for (int j = 0; j < cells; j++) {
+
                 try {
+                    if (sheet.getRow(i).getCell(j).toString().equals("")) {
+                        return books;
+                    }
+
                     if (sheet.getRow(i).getCell(j).getCellType() != 3) {
                         switch (j) {
                             case 0:
-                                book.setBook_name(sheet.getRow(i).getCell(j).getStringCellValue());
+
+                                book.setBook_name(sheet.getRow(i).getCell(j).toString());
                                 break;
                             case 1:
-                                book.setAuthor(sheet.getRow(i).getCell(j).getStringCellValue());
+                                book.setAuthor(sheet.getRow(i).getCell(j).toString());
                                 break;
                             case 2:
-                                book.setIntroduction(sheet.getRow(i).getCell(j).getStringCellValue());
+                                book.setIntroduction(sheet.getRow(i).getCell(j).toString());
                                 break;
                             case 3:
-                                book.setPublisher(sheet.getRow(i).getCell(j).getStringCellValue());
+                                book.setPublisher(sheet.getRow(i).getCell(j).toString());
                                 break;
                             case 4:
-                                int borrowable = sheet.getRow(i).getCell(j).getStringCellValue().equals("外借") ? 0 : 1;
+                                int borrowable = sheet.getRow(i).getCell(j).toString().equals("外借") ? 0 : 1;
                                 book.setIs_borrowable(borrowable);
                                 break;
                             case 5:
@@ -49,7 +55,7 @@ public class FormatExcelData {
                                 }
                                 break;
                             case 7:
-                                String category = sheet.getRow(i).getCell(j).getStringCellValue();
+                                String category = sheet.getRow(i).getCell(j).toString();
                                 String category_id = booksMapper.getBookCategoryListByName(category);
 //                            System.out.println(category_id);
                                 // 检查分类是否存在
@@ -70,7 +76,7 @@ public class FormatExcelData {
                                 break;
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("第" + i + "行第" + j + "列数据格式错误");
                 }
