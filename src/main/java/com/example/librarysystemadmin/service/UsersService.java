@@ -2,9 +2,16 @@ package com.example.librarysystemadmin.service;
 
 import com.example.librarysystemadmin.domain.User;
 import com.example.librarysystemadmin.domain.UserSecret;
+import com.example.librarysystemadmin.utils.ApiResponse;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public interface UsersService {
-    int registerUser(User user);
+    String registerUser(User user);
+
+    String loginService(Map<String, String> params, HttpServletRequest request);
 
     User getUser(String username);
 
@@ -12,19 +19,19 @@ public interface UsersService {
 
     int getUserListCount(String search);
 
-    String getUserById(String id);
+    User[] getUserById(String id);
 
-    int voucherRole(String username);
+    String getUserNameById(String id);
 
+    Integer voucherRole(String token);
 
     int getSearcUserListCount(String search);
 
     int devastateUser(String id);
 
-    int resetPassword(String id, String password);
+    String resetPassword(String id, Cookie[] cookies);
 
-    int updateUserListInfoAdmin(String id, String name, String email, String phone, String role, String sex, String address);
+    String updateUserListInfo(Map<String, String> params, Cookie[] cookies);
 
-    UserSecret getUserByToken(String token);
-
+    ApiResponse<UserSecret> getUserByToken(String token);
 }

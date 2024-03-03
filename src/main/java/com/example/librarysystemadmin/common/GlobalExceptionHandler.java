@@ -30,15 +30,21 @@ import java.io.PrintStream;
 @Component("customGlobalExceptionHandler")
 public class GlobalExceptionHandler {
 
+
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<String> globalExceptionHandle(Exception e) {
-        log.error("===========全局统一异常处理============");
-        log.error(getExceptionInfo(e));
-        return new ApiResponse<>(500, "error", getExceptionInfo(e));
+        String redColorCode = "\u001B[31m";
+        String resetColorCode = "\u001B[0m";
+        log.error(redColorCode + "===========全局统一异常处理============");
+
+        log.error(getExceptionInfo(e) + resetColorCode);
+
+        // 打印 SQL 语句
+        return new ApiResponse<>(500, "error", "服务器内部错误");
     }
 
     private static String getExceptionInfo(Exception ex) {

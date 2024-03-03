@@ -1,5 +1,7 @@
 package com.example.librarysystemadmin.service;
 
+import com.example.librarysystemadmin.domain.BookCopies;
+import com.example.librarysystemadmin.domain.BookLoan;
 import com.example.librarysystemadmin.domain.BookLoanWithBookUser;
 
 public interface BookLoanService {
@@ -8,5 +10,7 @@ public interface BookLoanService {
 
     int getBorrowBookListCount(String search);
 
-    String borrowingBook(String bookId, String token);
+    String borrowingBook(BookCopies bookId, String token);
+
+    String returnBook(String bookId, String token);
 }

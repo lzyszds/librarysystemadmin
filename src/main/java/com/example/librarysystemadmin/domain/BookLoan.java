@@ -15,6 +15,10 @@ public class BookLoan {
     @Column(name = "book_id")
     private Integer bookId;
 
+    @Column(name = "copy_id")
+    private String copyId;
+
+
     @Column(name = "user_id")
     private Integer userId;
 
@@ -27,7 +31,7 @@ public class BookLoan {
     @Column(name = "return_date")
     private Date returnDate;
 
-    // Getters and Setters
+
     public Integer getLoanId() {
         return loanId;
     }
@@ -44,11 +48,19 @@ public class BookLoan {
         this.bookId = bookId;
     }
 
-    public Integer getuserId() {
+    public String getCopyId() {
+        return copyId;
+    }
+
+    public void setCopyId(String copyId) {
+        this.copyId = copyId;
+    }
+
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setuserId(Integer userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -78,9 +90,10 @@ public class BookLoan {
 
     @Override
     public String toString() {
-        return "LibraryBookLoan{" +
+        return "BookLoan{" +
                 "loanId=" + loanId +
                 ", bookId=" + bookId +
+                ", copyId='" + copyId + '\'' +
                 ", userId=" + userId +
                 ", loanDate=" + loanDate +
                 ", dueDate=" + dueDate +

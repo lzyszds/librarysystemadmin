@@ -63,7 +63,10 @@ public class ApiResponse<T> {
         this.code = code;
         this.message = message;
         this.data = null;
-        log.error("api:《《 " + api + "》》 error: " + error +
-                "\n----------------------------------------------------------------------------------------------------------------------------");
+        // 设置控制台输出的颜色为红色
+        String redColorCode = "\u001B[31m";
+        String resetColorCode = "\u001B[0m";
+        log.error(redColorCode + "api:《《 " + api + "》》 error: " + error +
+                "\n----------------------------------------------------------------------------------------------------------------------------" + resetColorCode);
     }
 }

@@ -2,10 +2,12 @@ package com.example.librarysystemadmin.controller;
 
 
 import com.example.librarysystemadmin.domain.Book;
+import com.example.librarysystemadmin.domain.BookCopies;
 import com.example.librarysystemadmin.domain.BookLoanWithBookUser;
 import com.example.librarysystemadmin.domain.ListDataCount;
 import com.example.librarysystemadmin.service.BookLoanService;
 import com.example.librarysystemadmin.utils.ApiResponse;
+import com.example.librarysystemadmin.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,8 @@ public class bookLoanController {
 
     @Autowired
     BookLoanService bookLoanService;
+
+    TokenUtils TokenUtils;
 
     /*
      * 获取图书借阅列表
@@ -37,19 +41,35 @@ public class bookLoanController {
         return apiResponse;
     }
 
+    /*
+     *  借书接口
+     * */
     @PostMapping("/borrowingBook")
-    public ApiResponse<String> borrowingBook(@RequestBody Book param, HttpServletRequest request) {
+    public ApiResponse<String> borrowingBook(@RequestBody BookCopies param, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         Cookie[] tokens = request.getCookies();
-        String token = null;
-        for (Cookie item : tokens) {
-            if (item.getName().equals("token")) {
-                token = item.getValue();
-            }
-        }
-        String result = bookLoanService.borrowingBook(param.getBook_id().toString(), token);
+        String token = TokenUtils.getToken(tokens);
+        String result = bookLoanService.borrowingBook(param, token);
         if (result == null) {
             apiResponse.setSuccessResponse("借阅成功");
+        } else {
+            apiResponse.setErrorResponse(400, result);
+        }
+
+        return apiResponse;
+    }
+
+    /*
+     *  还书接口
+     * */
+    @PostMapping("/returnBook")
+    public ApiResponse<String> returnBook(@RequestBody Book param, HttpServletRequest request) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        Cookie[] tokens = request.getCookies();
+        String token = TokenUtils.getToken(tokens);
+        String result = bookLoanService.returnBook(param.getBook_id().toString(), token);
+        if (result == null) {
+            apiResponse.setSuccessResponse("归还成功");
         } else {
             apiResponse.setErrorResponse(400, result);
         }

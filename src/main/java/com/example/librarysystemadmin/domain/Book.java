@@ -21,8 +21,11 @@ public class Book {
     private String isbn;
     //书籍分类id
     private Long category_id;
-    //书籍状态 0：未借出 1：已借出
-    private int status;
+    //书籍状态 0：可以外借 1：只能馆内阅读
+    private int is_borrowable;
+
+    private int borrowing_volume;
+
 
     public Long getBook_id() {
         return book_id;
@@ -96,12 +99,20 @@ public class Book {
         this.category_id = category_id;
     }
 
-    public int getStatus() {
-        return status;
+    public int getIs_borrowable() {
+        return is_borrowable;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setIs_borrowable(int is_borrowable) {
+        this.is_borrowable = is_borrowable;
+    }
+
+    public int getBorrowing_volume() {
+        return borrowing_volume;
+    }
+
+    public void setBorrowing_volume(int borrowing_volume) {
+        this.borrowing_volume = borrowing_volume;
     }
 
     @Override
@@ -116,7 +127,8 @@ public class Book {
                 ", publish_date=" + publish_date +
                 ", isbn='" + isbn + '\'' +
                 ", category_id=" + category_id +
-                ", status='" + status + '\'' +
+                ", is_borrowable=" + is_borrowable +
+                ", borrowing_volume=" + borrowing_volume +
                 '}';
     }
 }

@@ -17,6 +17,10 @@ public class BookLoanWithBookUser {
 
     @Column(name = "book_isbn")
     private String bookIsbn;
+
+    @Column(name = "copy_id")
+    private String copyId;
+
     @Column(name = "user_id")
     private Integer userId;
     @Column(name = "name")
@@ -100,5 +104,13 @@ public class BookLoanWithBookUser {
 
     public void setBookIsbn(String bookIsbn) {
         this.bookIsbn = bookIsbn;
+    }
+
+    public String getCopyId() {
+        return copyId;
+    }
+
+    public void setCopyId(String copyId) {
+        this.copyId = copyId;
     }
 }
