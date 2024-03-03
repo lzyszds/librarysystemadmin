@@ -4,6 +4,7 @@ import com.example.librarysystemadmin.domain.User;
 import com.example.librarysystemadmin.domain.UserSecret;
 import com.example.librarysystemadmin.mapper.UsersMapper;
 import com.example.librarysystemadmin.service.UsersService;
+import com.example.librarysystemadmin.utils.ApiResponse;
 import com.example.librarysystemadmin.utils.RSAUtils;
 import com.example.librarysystemadmin.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,7 +190,14 @@ public class UsersServiceImpl implements UsersService {
     }
 
     // 根据Token获取用户信息方法
-    public UserSecret getUserByToken(String token) {
-        return usersMapper.getUserByToken(token);
+    public ApiResponse<UserSecret> getUserByToken(String token) {
+        ApiResponse<UserSecret> apiResponse = new ApiResponse<>();
+        UserSecret user = usersMapper.getUserByToken(token);
+        if (user == null) {
+            apiResponse.setErrorResponse(500, "用户不存在");
+        } else {
+            apiResponse.setSuccessResponse(user);
+        }
+        return apiResponse;
     }
 }

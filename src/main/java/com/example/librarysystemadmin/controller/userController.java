@@ -8,6 +8,7 @@ import com.example.librarysystemadmin.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -67,6 +68,34 @@ public class userController {
         }
 
         return apiResponse;
+    }
+
+    //验证用户token
+    @RequestMapping("/voucherToken")
+    public ApiResponse<UserSecret> voucherToken(HttpServletRequest request) {
+        // 从请求中获取token
+        Cookie[] cookies = request.getCookies();
+
+        //获取token 键值
+        if (cookies == null) {
+            ApiResponse<UserSecret> apiResponse = new ApiResponse<>();
+            apiResponse.setErrorResponse(401, "未登录");
+            return apiResponse;
+        }
+        String tokenValue = null;
+        for (Cookie cookie : cookies) {
+            if ("token".equals(cookie.getName())) {
+                tokenValue = cookie.getValue();
+            }
+        }
+
+        if (tokenValue == null) {
+            ApiResponse<UserSecret> apiResponse = new ApiResponse<>();
+            apiResponse.setErrorResponse(401, "未登录");
+            return apiResponse;
+        }
+        System.out.println("tokenValue: " + tokenValue);
+        return usersService.getUserByToken(tokenValue);
     }
 
 

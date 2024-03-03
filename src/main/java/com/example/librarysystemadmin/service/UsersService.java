@@ -2,6 +2,7 @@ package com.example.librarysystemadmin.service;
 
 import com.example.librarysystemadmin.domain.User;
 import com.example.librarysystemadmin.domain.UserSecret;
+import com.example.librarysystemadmin.utils.ApiResponse;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -28,9 +29,9 @@ public interface UsersService {
 
     int devastateUser(String id);
 
-    String resetPassword(String id,  Cookie[] cookies);
+    String resetPassword(String id, Cookie[] cookies);
 
     String updateUserListInfo(Map<String, String> params, Cookie[] cookies);
 
-    UserSecret getUserByToken(String token);
+    ApiResponse<UserSecret> getUserByToken(String token);
 }
