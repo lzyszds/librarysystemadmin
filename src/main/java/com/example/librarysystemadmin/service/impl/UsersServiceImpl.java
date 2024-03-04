@@ -189,6 +189,48 @@ public class UsersServiceImpl implements UsersService {
         return null;
     }
 
+    // 修改用户列表信息（私有）方法
+    public ApiResponse<String> updateUserInfoPrivate(Map<String, String> params, HttpServletRequest request) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        String name = params.get("name");
+        String email = params.get("email");
+        String phone = params.get("phone");
+        String sex = params.get("sex");
+        String address = params.get("address");
+
+        Cookie[] cookies = request.getCookies();
+        // 获取token
+        String token = tokenUtils.getToken(cookies);
+        if (token.equals("")) {
+            if (request.getHeader("token") != null) {
+                token = request.getHeader("token");
+            }
+        }
+        // 根据token获取用户id
+        UserSecret user = usersMapper.getUserByToken(token);
+        String id = Integer.toString(user.getId());
+        String role = Integer.toString(user.getRole());
+        //对当前用户的信息进行修改
+        try {
+            int result = usersMapper.updateUserListInfo(id, name, email, phone, role, sex, address);
+            if (result == 0) {
+                apiResponse.setErrorResponse(500, "修改失败");
+            } else {
+                apiResponse.setSuccessResponse("修改成功");
+            }
+        } catch (Exception e) {
+            // 捕获异常并返回具体的错误信息
+            String message = e.getMessage();
+            //电话号码长度超出
+            if (message.contains("phone")) {
+                apiResponse.setErrorResponse(500, "电话号码长度超出");
+            } else {
+                apiResponse.setErrorResponse(500, e.toString());
+            }
+        }
+        return apiResponse;
+    }
+
     // 根据Token获取用户信息方法
     public ApiResponse<UserSecret> getUserByToken(String token) {
         ApiResponse<UserSecret> apiResponse = new ApiResponse<>();

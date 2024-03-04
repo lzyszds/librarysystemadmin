@@ -4,10 +4,10 @@ import javax.servlet.http.Cookie;
 
 public class TokenUtils {
 
-    public String getToken(Cookie[] tokens) {
+    public static String getToken(Cookie[] cookies) {
         String token = "";
-        if (tokens != null) {
-            for (Cookie cookie : tokens) {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     token = cookie.getValue();
                 }

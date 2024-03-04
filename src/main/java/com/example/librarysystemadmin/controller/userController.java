@@ -86,6 +86,8 @@ public class userController {
         for (Cookie cookie : cookies) {
             if ("token".equals(cookie.getName())) {
                 tokenValue = cookie.getValue();
+            } else {
+                tokenValue = request.getHeader("token");
             }
         }
 
@@ -183,7 +185,7 @@ public class userController {
     /*
      * 修改用户信息（管理）
      * */
-    @PostMapping("/updateUserListInfoAdmin")
+    @PostMapping("/updateUserInfoAdmin")
     public ApiResponse<String> updateUserListInfoAdmin(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         try {
@@ -202,4 +204,13 @@ public class userController {
         return apiResponse;
     }
 
+    /*
+     * 修改用户信息（个人）
+     * */
+    @PostMapping("/updateUserInfoPrivate")
+    public ApiResponse<String> updateUserInfoPrivate(@RequestBody Map<String, String> params, HttpServletRequest request) {
+
+
+        return usersService.updateUserInfoPrivate(params, request);
+    }
 }

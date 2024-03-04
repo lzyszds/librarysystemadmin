@@ -33,5 +33,7 @@ public interface UsersService {
 
     String updateUserListInfo(Map<String, String> params, Cookie[] cookies);
 
+    ApiResponse<String> updateUserInfoPrivate(Map<String, String> params, HttpServletRequest request);
+
     ApiResponse<UserSecret> getUserByToken(String token);
 }

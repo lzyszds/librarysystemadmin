@@ -43,29 +43,42 @@ public class MyInterceptor implements HandlerInterceptor {
 
         // 从请求中获取token
         Cookie[] cookies = request.getCookies();
-
+        //获取请求头中的token
+        String token = request.getHeader("token");
         boolean voucher = false;
         //获取token 键值
-        if (cookies == null) return voucher;
-
-
-        // 遍历 Cookie 数组
-        for (Cookie cookie : cookies) {
-            // 检查是否是你需要的 Cookie，这里假设你的 Cookie 名称为 "token"
-            if ("token".equals(cookie.getName())) {
-                // 获取 Cookie 的值
-                String tokenValue = cookie.getValue();
-                Integer role = usersService.voucherRole(tokenValue);
-                //查询用户角色
-                if (role == null) {
-                    return voucher;
-                }
-                if (role == 0) {
-                    voucher = true;
+        if (cookies == null) {
+            return voucher;
+        } else {
+            // 遍历 Cookie 数组
+            for (Cookie cookie : cookies) {
+                // 检查是否是你需要的 Cookie，这里假设你的 Cookie 名称为 "token"
+                if ("token".equals(cookie.getName())) {
+                    // 获取 Cookie 的值
+                    String tokenValue = cookie.getValue();
+                    // 验证用户 token
+                    voucher = hasVerified(tokenValue);
                 } else {
-                    voucher = false;
+                    if (token != null) {
+                        voucher = hasVerified(token);
+                    }
                 }
             }
+        }
+        return voucher;
+    }
+
+    public Boolean hasVerified(String tokenValue) {
+        Boolean voucher = false;
+        Integer role = usersService.voucherRole(tokenValue);
+        //查询用户角色
+        if (role == null) {
+            return voucher;
+        }
+        if (role == 0) {
+            voucher = true;
+        } else {
+            voucher = false;
         }
         return voucher;
     }
