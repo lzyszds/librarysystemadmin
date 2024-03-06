@@ -4,6 +4,8 @@ import com.example.librarysystemadmin.domain.*;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface BooksService {
     ApiResponse<ListDataCount<CategoryCopiesBook[]>> getBookList(String search, int page, int limit);
 
@@ -34,4 +36,5 @@ public interface BooksService {
     ApiResponse<CategoryCopiesBook> getBookInfo(String book_id);
 
 
+  
 }

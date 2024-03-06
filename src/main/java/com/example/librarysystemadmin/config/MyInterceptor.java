@@ -2,6 +2,7 @@ package com.example.librarysystemadmin.config;
 
 
 import com.example.librarysystemadmin.service.UsersService;
+import com.example.librarysystemadmin.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -48,20 +49,18 @@ public class MyInterceptor implements HandlerInterceptor {
         boolean voucher = false;
         //获取token 键值
         if (cookies == null) {
+            if (token != null) {
+                voucher = hasVerified(token);
+            }
             return voucher;
         } else {
-            // 遍历 Cookie 数组
-            for (Cookie cookie : cookies) {
-                // 检查是否是你需要的 Cookie，这里假设你的 Cookie 名称为 "token"
-                if ("token".equals(cookie.getName())) {
-                    // 获取 Cookie 的值
-                    String tokenValue = cookie.getValue();
-                    // 验证用户 token
-                    voucher = hasVerified(tokenValue);
-                } else {
-                    if (token != null) {
-                        voucher = hasVerified(token);
-                    }
+            voucher = hasVerified(TokenUtils.getToken(cookies));
+            //判断是否有权限 有权限返回true 没有通过请求头中的token再次验证
+            if (voucher) {
+                return voucher;
+            } else {
+                if (token != null) {
+                    voucher = hasVerified(token);
                 }
             }
         }

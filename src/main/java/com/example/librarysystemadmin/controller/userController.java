@@ -209,8 +209,6 @@ public class userController {
      * */
     @PostMapping("/updateUserInfoPrivate")
     public ApiResponse<String> updateUserInfoPrivate(@RequestBody Map<String, String> params, HttpServletRequest request) {
-
-
         return usersService.updateUserInfoPrivate(params, request);
     }
 }

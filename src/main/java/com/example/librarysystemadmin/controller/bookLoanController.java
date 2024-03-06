@@ -1,10 +1,7 @@
 package com.example.librarysystemadmin.controller;
 
 
-import com.example.librarysystemadmin.domain.Book;
-import com.example.librarysystemadmin.domain.BookCopies;
-import com.example.librarysystemadmin.domain.BookLoanWithBookUser;
-import com.example.librarysystemadmin.domain.ListDataCount;
+import com.example.librarysystemadmin.domain.*;
 import com.example.librarysystemadmin.service.BookLoanService;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import com.example.librarysystemadmin.utils.TokenUtils;
@@ -15,7 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/Api/bookLoan")
+@RequestMapping("/Api/BookLoan")
 public class bookLoanController {
 
 
@@ -43,6 +40,9 @@ public class bookLoanController {
 
     /*
      *  借书接口
+     *  借书接口需要传入图书id和副本号
+     *  用户id是通过token获取的
+     *  借书成功返回借书成功
      * */
     @PostMapping("/borrowingBook")
     public ApiResponse<String> borrowingBook(@RequestBody BookCopies param, HttpServletRequest request) {
@@ -59,21 +59,21 @@ public class bookLoanController {
         return apiResponse;
     }
 
+    //根据用户id获取用户借阅书籍列表
+    @RequestMapping("/getBorrowedBooks")
+    public ApiResponse<CategoryCopiesBook[]> getBorrowedBooks(HttpServletRequest request) {
+        return bookLoanService.getBorrowedBooks(request);
+    }
+
     /*
      *  还书接口
+     *  还书接口需要传入图书id和副本号和用户id
+     *  因为是后台操作，所以不使用token来获取用户id
+     *  还书成功返回还书成功
      * */
     @PostMapping("/returnBook")
-    public ApiResponse<String> returnBook(@RequestBody Book param, HttpServletRequest request) {
-        ApiResponse<String> apiResponse = new ApiResponse<>();
-        Cookie[] tokens = request.getCookies();
-        String token = TokenUtils.getToken(tokens);
-        String result = bookLoanService.returnBook(param.getBook_id().toString(), token);
-        if (result == null) {
-            apiResponse.setSuccessResponse("归还成功");
-        } else {
-            apiResponse.setErrorResponse(400, result);
-        }
-
-        return apiResponse;
+    public ApiResponse<String> returnBook(@RequestBody BookLoan param) {
+        return bookLoanService.returnBook(param);
     }
+
 }

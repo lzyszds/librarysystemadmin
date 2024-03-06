@@ -4,7 +4,7 @@ public class CategoryCopiesBook extends Book {
 
     private String category_name;
 
-    private int copy_id;
+    private long copy_id;
 
     public String getCategory_name() {
         return category_name;
@@ -15,11 +15,11 @@ public class CategoryCopiesBook extends Book {
     }
 
 
-    public int getCopy_id() {
+    public long getCopy_id() {
         return copy_id;
     }
 
-    public void setCopy_id(int copy_id) {
+    public void setCopy_id(long copy_id) {
         this.copy_id = copy_id;
     }
 

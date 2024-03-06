@@ -86,4 +86,10 @@ public interface BooksMapper {
     //查询图书信息
     @Select("SELECT * FROM books LEFT JOIN categories c ON books.category_id = c.category_id WHERE book_id = #{book_id} ")
     CategoryCopiesBook getBookInfo(String book_id);
+
+    //获取借阅图书列表
+    @Select("SELECT b.book_id, b.book_name, b.author, b.cover, b.publisher, b.publish_date, b.isbn, b.introduction, c.category_name, c.category_id, b.is_borrowable\n" +
+            "FROM books b LEFT JOIN categories c ON b.category_id = c.category_id\n" +
+            "WHERE b.book_id in (SELECT book_id FROM library_book_loan WHERE user_id = #{user_id})")
+    CategoryCopiesBook[] getBorrowedBooks(String user_id);
 }

@@ -19,7 +19,7 @@ public interface UsersService {
 
     int getUserListCount(String search);
 
-    User[] getUserById(String id);
+    User getUserById(int id);
 
     String getUserNameById(String id);
 

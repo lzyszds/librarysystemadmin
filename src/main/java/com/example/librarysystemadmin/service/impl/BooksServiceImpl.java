@@ -4,6 +4,7 @@ import com.example.librarysystemadmin.domain.*;
 import com.example.librarysystemadmin.mapper.BookCopiesMapper;
 import com.example.librarysystemadmin.mapper.BookLoanMapper;
 import com.example.librarysystemadmin.mapper.BooksMapper;
+import com.example.librarysystemadmin.mapper.UsersMapper;
 import com.example.librarysystemadmin.service.BooksService;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import com.example.librarysystemadmin.utils.FormatExcelData;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,6 +48,9 @@ public class BooksServiceImpl implements BooksService {
 
     @Autowired
     private BookCopiesMapper bookCopiesMapper;
+
+    @Autowired
+    private UsersMapper usersMapper;
 
     /*
      * 获取图书列表
@@ -173,7 +178,6 @@ public class BooksServiceImpl implements BooksService {
                         bookCopiesArray[i] = bookCopies;
                     }
 
-                    System.out.println(bookCopiesMapper.addBookCopies(bookCopiesArray));
 
                     apiResponse.setSuccessResponse("添加成功");
                 } else {
@@ -492,7 +496,6 @@ public class BooksServiceImpl implements BooksService {
         try {
             page = (page - 1) * limit;
 
-            System.out.println(search + field + page + limit);
             apiResponse.setSuccessResponse(booksMapper.getBookListByField(search, field, page, limit));
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -545,4 +548,6 @@ public class BooksServiceImpl implements BooksService {
         }
         return apiResponse;
     }
+
+
 }

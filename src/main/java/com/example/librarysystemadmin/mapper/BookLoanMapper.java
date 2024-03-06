@@ -4,6 +4,8 @@ import com.example.librarysystemadmin.domain.BookLoan;
 import com.example.librarysystemadmin.domain.BookLoanWithBookUser;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
+
 @Mapper
 public interface BookLoanMapper {
 
@@ -30,7 +32,7 @@ public interface BookLoanMapper {
     int insertBookLoan(BookLoan bookLoan);
 
     @Update("UPDATE library_book_loan SET return_date = #{returnDate} WHERE loan_id = #{loanId}")
-    int updateBookLoan(BookLoan bookLoan);
+    int updateBookLoan(Date returnDate, Integer loanId);
 
     @Delete("DELETE FROM library_book_loan WHERE book_id in (#{bookId})")
     int deleteBookLoan(String bookId);

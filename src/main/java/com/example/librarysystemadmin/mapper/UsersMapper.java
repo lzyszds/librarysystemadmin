@@ -28,8 +28,8 @@ public interface UsersMapper {
     String getUserNameById(String id);
 
     // 根据用户id获取用户名称
-    @Select("SELECT username FROM users WHERE id in (#{id})")
-    User[] getUserByid(String id);
+    @Select("SELECT * FROM users WHERE id in (#{id})")
+    User getUserByid(int id);
 
     // 根据用户名获取用户角色
     @Select("SELECT role from users where token = #{token} ")

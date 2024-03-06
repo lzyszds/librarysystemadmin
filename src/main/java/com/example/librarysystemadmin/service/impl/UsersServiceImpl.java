@@ -107,7 +107,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     // 根据用户ID获取用户信息方法
-    public User[] getUserById(String id) {
+    public User getUserById(int id) {
         return usersMapper.getUserByid(id);
     }
 
@@ -169,7 +169,7 @@ public class UsersServiceImpl implements UsersService {
         String address = params.get("address");
 
         // 获取token
-        String token = tokenUtils.getToken(cookies);
+        String token = TokenUtils.getToken(cookies);
         // 根据token获取用户信息
         UserSecret user = usersMapper.getUserByToken(token);
         int operatorRole = user.getRole(); // 获取操作用户的角色
@@ -178,7 +178,7 @@ public class UsersServiceImpl implements UsersService {
             return "权限不足";
         }
         //"修改失败,用户可能不存在，请重新尝试"
-        if (usersMapper.getUserByid(id).length == 0) {
+        if (usersMapper.getUserByid(Integer.parseInt(id)) == null) {
             return "修改失败,用户可能不存在，请重新尝试";
         }
 

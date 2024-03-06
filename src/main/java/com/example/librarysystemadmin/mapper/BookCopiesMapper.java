@@ -1,6 +1,7 @@
 package com.example.librarysystemadmin.mapper;
 
 import com.example.librarysystemadmin.domain.BookCopies;
+import com.example.librarysystemadmin.domain.CategoryCopiesBook;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -41,4 +42,11 @@ public interface BookCopiesMapper {
      * */
     @Update("UPDATE book_copies SET status = #{status} WHERE copy_id = #{copyid}")
     void setBookCopiesStatus(String copyid, String status);
+
+    /*
+     * 根据用户id获取用户借阅书籍列表
+     * */
+    @Select("SELECT * FROM book_copies as c left JOIN books ON c.book_id = books.book_id " +
+            "WHERE copy_id in (SELECT copy_id FROM library_book_loan WHERE user_id = #{userId})")
+    CategoryCopiesBook[] getBorrowedBooks(String userId);
 }
