@@ -40,5 +40,8 @@ public interface BookLoanMapper {
     @Select("SELECT COUNT(*) FROM library_book_loan WHERE book_id in (#{bookId})")
     int getBookLoanList(String bookId);
 
+    @Select("SELECT copy_id FROM book_copies WHERE book_id = #{bookId} and status = 0")
+    String[] getCopyIdByBookId(Integer bookId);
+
 
 }

@@ -34,14 +34,14 @@ public interface BookCopiesMapper {
     /*
      * 查询copyid的书籍是否被借出
      * */
-    @Select("SELECT * FROM book_copies where copy_id =#{copyId}")
-    BookCopies getCopiesByCopyId(String copyId);
+    @Select("SELECT * FROM book_copies where copy_id = '#{copyId}' ")
+    BookCopies getCopiesByCopyId(Long copyId);
 
     /*
      * 设置书籍副本状态 0未借出 1已借出
      * */
-    @Update("UPDATE book_copies SET status = #{status} WHERE copy_id = #{copyid}")
-    void setBookCopiesStatus(String copyid, String status);
+    @Update("UPDATE book_copies SET status = 1 WHERE copy_id = #{copyid}")
+    void setBookCopiesStatus(String copyid, int status);
 
     /*
      * 根据用户id获取用户借阅书籍列表

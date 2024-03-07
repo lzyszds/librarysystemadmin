@@ -14,9 +14,12 @@ public interface BookLoanService {
 
     int getBorrowBookListCount(String search);
 
-    String borrowingBook(BookCopies bookId, String token);
 
     ApiResponse<CategoryCopiesBook[]> getBorrowedBooks(HttpServletRequest userId);
 
-    ApiResponse<String> returnBook(BookLoan param);
+    ApiResponse<String> borrowingBook(Integer bookId, String token);
+
+    ApiResponse<String> getCopyId(Integer bookId);
+
+    ApiResponse<String> returnBook(BookLoan param, String token);
 }

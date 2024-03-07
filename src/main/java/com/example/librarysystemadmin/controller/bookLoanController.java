@@ -19,7 +19,8 @@ public class bookLoanController {
     @Autowired
     BookLoanService bookLoanService;
 
-    TokenUtils TokenUtils;
+
+    TokenUtils tokenUtils = new TokenUtils();
 
     /*
      * 获取图书借阅列表
@@ -45,19 +46,23 @@ public class bookLoanController {
      *  借书成功返回借书成功
      * */
     @PostMapping("/borrowingBook")
-    public ApiResponse<String> borrowingBook(@RequestBody BookCopies param, HttpServletRequest request) {
-        ApiResponse<String> apiResponse = new ApiResponse<>();
+    public ApiResponse<String> borrowingBook(@RequestBody BookLoan param, HttpServletRequest request) {
         Cookie[] tokens = request.getCookies();
         String token = TokenUtils.getToken(tokens);
-        String result = bookLoanService.borrowingBook(param, token);
-        if (result == null) {
-            apiResponse.setSuccessResponse("借阅成功");
-        } else {
-            apiResponse.setErrorResponse(400, result);
-        }
-
-        return apiResponse;
+        System.out.println(token);
+        return bookLoanService.borrowingBook(param.getBookId(), token);
     }
+
+    /*
+     *  获取用户查看的书籍的副本id
+     *  return 副本id copy_id 方便用户还书
+     * */
+
+    @RequestMapping("/getCopyId")
+    public ApiResponse<String> getCopyId(@RequestParam Integer bookId) {
+        return bookLoanService.getCopyId(bookId);
+    }
+
 
     //根据用户id获取用户借阅书籍列表
     @RequestMapping("/getBorrowedBooks")
@@ -72,8 +77,10 @@ public class bookLoanController {
      *  还书成功返回还书成功
      * */
     @PostMapping("/returnBook")
-    public ApiResponse<String> returnBook(@RequestBody BookLoan param) {
-        return bookLoanService.returnBook(param);
+    public ApiResponse<String> returnBook(@RequestBody BookLoan param, HttpServletRequest request) {
+        Cookie[] tokens = request.getCookies();
+        String token = TokenUtils.getToken(tokens);
+        return bookLoanService.returnBook(param, token);
     }
 
 }

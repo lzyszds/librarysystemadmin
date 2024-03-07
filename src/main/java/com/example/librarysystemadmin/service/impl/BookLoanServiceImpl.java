@@ -52,63 +52,6 @@ public class BookLoanServiceImpl implements BookLoanService {
         return bookLoanMapper.findAllCount(search);
     }
 
-    public String borrowingBook(BookCopies param, String token) {
-        UserSecret users = usersMapper.getUserByToken(token);
-        if (users == null) {
-            return "用户不存在";
-        } else {
-            // 判断书籍id跟副本号是否匹配
-            if (bookCopiesMapper.getCopiesByCopyId(param.getCopy_id()).getBook_id() != param.getBook_id()) {
-                return "书籍id不匹配";
-            }
-            System.out.println(users.getBorrow());
-            if (users.getBorrow() != null) {
-                String[] borrowIds = users.getBorrow().split(",");
-                //判断用户借阅数量是否上限
-                if (borrowIds.length >= libraryConfig.getMaxBooksPerUser()) {
-                    return "借阅数量已达上限";
-                }
-                //判断用户是否借阅过该本书籍
-                if (arrayUtils.includes(borrowIds, Integer.toString(param.getBook_id()))) {
-                    return "您已借阅过该书籍";
-                }
-            }
-            //判断当前书籍是否有库存（未借出的）
-            BookCopies bookCopies = bookCopiesMapper.getCopiesByCopyId(param.getCopy_id());
-
-            if (bookCopies == null || bookCopies.getStatus() != 0) {
-                return "当前书籍已被借出";
-            }
-
-            BookLoan bookLoan = new BookLoan();
-            bookLoan.setCopyId(param.getCopy_id());
-            bookLoan.setBookId(param.getBook_id());
-            bookLoan.setUserId(users.getId());
-            bookLoan.setLoanDate(new Date(System.currentTimeMillis()));
-            bookLoan.setDueDate(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000));
-
-            if (bookLoanMapper.insertBookLoan(bookLoan) < 1) {
-                return "借阅失败";
-            } else {
-                //给用户添加借阅字段
-                if (users.getBorrow() == null || users.getBorrow().equals("")) {
-                    users.setBorrow(param.getBook_id() + "");
-                } else {
-                    users.setBorrow("," + users.getBorrow());
-                }
-                String borrow = users.getBorrow() + param.getBook_id();
-                //给用户添加借阅次数
-                usersMapper.updateBorrowCount(users.getId(), borrow);
-                //给书籍副本添加借出状态
-                bookCopiesMapper.setBookCopiesStatus(param.getCopy_id(), "1");
-                //给日志表添加借阅记录
-                statisticService.setStatisticsHandle("borrowed");
-            }
-            return null;
-        }
-
-    }
-
     public ApiResponse<CategoryCopiesBook[]> getBorrowedBooks(HttpServletRequest request) {
 
         ApiResponse<CategoryCopiesBook[]> apiResponse = new ApiResponse<>();
@@ -123,10 +66,78 @@ public class BookLoanServiceImpl implements BookLoanService {
         return apiResponse;
     }
 
-    public ApiResponse<String> returnBook(BookLoan param) {
+    public ApiResponse<String> borrowingBook(Integer bookId, String token) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        User users = usersMapper.getUserByid(param.getUserId());
+        UserSecret users = usersMapper.getUserByToken(token);
         if (users == null) {
+            apiResponse.setErrorResponse(400, "用户不存在");
+            return apiResponse;
+        }
+        if (users.getBorrow() != null && !users.getBorrow().equals("")) {
+            String[] borrowIds = users.getBorrow().split(",");
+            //判断用户借阅数量是否上限
+            if (borrowIds.length >= libraryConfig.getMaxBooksPerUser()) {
+                apiResponse.setErrorResponse(400, "借阅数量已达上限");
+                return apiResponse;
+            }
+            //判断用户是否借阅过该本书籍
+            if (arrayUtils.includes(borrowIds, Integer.toString(bookId))) {
+                apiResponse.setErrorResponse(400, "已借阅过该书籍");
+                return apiResponse;
+            }
+
+        }
+        //获取当前书籍的副本id还剩余库存
+        String[] copyId = bookLoanMapper.getCopyIdByBookId(bookId);
+        if (copyId.length < 1) {
+            apiResponse.setErrorResponse(400, "书籍库存不足");
+            return apiResponse;
+        }
+
+        BookLoan bookLoan = new BookLoan();
+        bookLoan.setCopyId(copyId[0]);
+        bookLoan.setBookId(bookId);
+        bookLoan.setUserId(users.getId());
+        bookLoan.setLoanDate(new Date(System.currentTimeMillis()));
+        bookLoan.setDueDate(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000));
+        if (bookLoanMapper.insertBookLoan(bookLoan) < 1) {
+            apiResponse.setErrorResponse(400, "借阅失败");
+        } else {
+            //给用户添加借阅字段
+            if (users.getBorrow() == null || users.getBorrow().equals("")) {
+                users.setBorrow(bookId + "");
+            } else {
+                users.setBorrow(users.getBorrow() + "," + bookId);
+            }
+
+            //给用户添加借阅次数
+            usersMapper.updateBorrowCount(users.getId(), users.getBorrow());
+            //给书籍副本添加借出状态
+            bookCopiesMapper.setBookCopiesStatus(copyId[0].toString(), 1);
+            //给日志表添加借阅记录
+            statisticService.setStatisticsHandle("borrowed");
+            apiResponse.setSuccessResponse("借阅成功");
+        }
+        return apiResponse;
+    }
+
+
+    public ApiResponse<String> getCopyId(Integer bookId) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        String[] copyId = bookLoanMapper.getCopyIdByBookId(bookId);
+        if (copyId == null) {
+            apiResponse.setErrorResponse(400, "副本不存在");
+        } else {
+            apiResponse.setSuccessResponse(copyId[0]);
+        }
+        return apiResponse;
+    }
+
+    public ApiResponse<String> returnBook(BookLoan param, String token) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+
+        UserSecret user = usersMapper.getUserByToken(token);
+        if (user == null) {
             apiResponse.setErrorResponse(400, "用户不存在");
         } else {
             //获取当前时间
@@ -138,7 +149,7 @@ public class BookLoanServiceImpl implements BookLoanService {
                 return apiResponse;
             }
             //给用户借阅字段删除当前书籍id
-            String[] borrowIds = users.getBorrow().split(",");
+            String[] borrowIds = user.getBorrow().split(",");
             String borrow = "";
             for (int i = 0; i < borrowIds.length; i++) {
                 if (!borrowIds[i].equals(param.getBookId().toString())) {
@@ -146,12 +157,12 @@ public class BookLoanServiceImpl implements BookLoanService {
                 }
             }
             if (borrow.equals("")) {
-                usersMapper.updateBorrowCount(users.getId(), "");
+                usersMapper.updateBorrowCount(user.getId(), "");
             } else {
-                usersMapper.updateBorrowCount(users.getId(), borrow.substring(0, borrow.length() - 1));
+                usersMapper.updateBorrowCount(user.getId(), borrow.substring(0, borrow.length() - 1));
             }
             //给书籍副本添加归还状态
-            bookCopiesMapper.setBookCopiesStatus(param.getCopyId(), "0");
+            bookCopiesMapper.setBookCopiesStatus(param.getCopyId(), 0);
             //给日志表添加归还记录
             statisticService.setStatisticsHandle("returned");
             apiResponse.setSuccessResponse("归还成功");
