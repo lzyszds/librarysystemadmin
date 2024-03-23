@@ -46,7 +46,9 @@ public interface BookCopiesMapper {
     /*
      * 根据用户id获取用户借阅书籍列表
      * */
-    @Select("SELECT * FROM book_copies as c left JOIN books ON c.book_id = books.book_id " +
+    @Select("SELECT * FROM books as b " +
+            "INNER JOIN book_copies as bc ON bc.book_id = b.book_id " +
+            "INNER JOIN categories as c ON c.category_id = b.category_id " +
             "WHERE copy_id in (SELECT copy_id FROM library_book_loan WHERE user_id = #{userId})")
     CategoryCopiesBook[] getBorrowedBooks(String userId);
 }
