@@ -24,7 +24,7 @@ public class FormatExcelData {
                         switch (j) {
                             case 0:
 
-                                book.setBook_name(sheet.getRow(i).getCell(j).toString());
+                                book.setBookName(sheet.getRow(i).getCell(j).toString());
                                 break;
                             case 1:
                                 book.setAuthor(sheet.getRow(i).getCell(j).toString());
@@ -37,14 +37,14 @@ public class FormatExcelData {
                                 break;
                             case 4:
                                 int borrowable = sheet.getRow(i).getCell(j).toString().equals("外借") ? 0 : 1;
-                                book.setIs_borrowable(borrowable);
+                                book.setIsBorrowable(borrowable);
                                 break;
                             case 5:
                                 if (sheet.getRow(i).getCell(j).getCellType() == 0) {
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                                     // 将 String 类型转换成 Date 类型
                                     Date date = sheet.getRow(i).getCell(j).getDateCellValue();
-                                    book.setPublish_date(new java.sql.Date(date.getTime()));
+                                    book.setPublishDate(new java.sql.Date(date.getTime()));
                                 }
                                 break;
                             case 6:
@@ -60,10 +60,10 @@ public class FormatExcelData {
 //                            System.out.println(category_id);
                                 // 检查分类是否存在
                                 if (category_id != null) {
-                                    book.setCategory_id(new Long(category_id));
+                                    book.setCategoryId(new Long(category_id));
                                 } else {
                                     int id = booksMapper.addBookCategory(category);
-                                    book.setCategory_id(new Long(id));
+                                    book.setCategoryId(new Long(id));
                                 }
                                 break;
                             case 8:

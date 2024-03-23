@@ -103,13 +103,13 @@ public class BooksServiceImpl implements BooksService {
      * 17.返回结果
      * */
     static String visitedInfo(Book book) {
-        if (book.getBook_name() == null || book.getBook_name().equals("")) {
+        if (book.getBookName() == null || book.getBookName().equals("")) {
             return "请填写书名";
         }
         if (book.getAuthor() == null || book.getAuthor().equals("")) {
             return "请填写作者";
         }
-        if (book.getCategory_id() == null || book.getCategory_id().equals("")) {
+        if (book.getCategoryId() == null || book.getCategoryId().equals("")) {
             return "请选择分类";
         }
         if (book.getIsbn() == null || book.getIsbn().equals("")) {
@@ -118,7 +118,7 @@ public class BooksServiceImpl implements BooksService {
         if (book.getPublisher() == null || book.getPublisher().equals("")) {
             return "请填写出版社";
         }
-        if (book.getPublish_date() == null || book.getPublish_date().equals("")) {
+        if (book.getPublishDate() == null || book.getPublishDate().equals("")) {
             return "请填写出版日期";
         }
         return null;
@@ -144,7 +144,7 @@ public class BooksServiceImpl implements BooksService {
     public ApiResponse<String> saveBookInfo(FetchBook book) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         // 判断是添加还是修改
-        Boolean requestType = book.getBook_id() == null;
+        Boolean requestType = book.getBookId() == null;
 
         try {
             // 参数验证
@@ -174,7 +174,7 @@ public class BooksServiceImpl implements BooksService {
                         BookCopies bookCopies = new BookCopies();
                         bookCopies.setBook_id(newId);
                         bookCopies.setCopy_id(book.getIsbn() + "0725" + (i + 1));
-                        bookCopies.setStatus(book.getIs_borrowable());
+                        bookCopies.setStatus(book.getIsBorrowable());
                         bookCopiesArray[i] = bookCopies;
                     }
 
@@ -186,11 +186,11 @@ public class BooksServiceImpl implements BooksService {
             } else {
                 //修改书籍
                 // 检查书籍是否存在
-                if (booksMapper.findById(book.getBook_id().toString()) == 0) {
+                if (booksMapper.findById(book.getBookId().toString()) == 0) {
                     apiResponse.setErrorResponse(500, "书籍不存在");
                 } else {
                     // 检查ISBN是否已经存在 且不是当前书籍 先查出当前isbn对应的书籍id 再判断是否是当前书籍
-                    if (booksMapper.findByIdIsbn(book.getIsbn()) > 0 && !(booksMapper.findByIdIsbn(book.getIsbn()) == book.getBook_id())) {
+                    if (booksMapper.findByIdIsbn(book.getIsbn()) > 0 && !(booksMapper.findByIdIsbn(book.getIsbn()) == book.getBookId())) {
                         apiResponse.setErrorResponse(500, "ISBN已存在");
                     }
                     if (booksMapper.updateBookInfo(book) == 1) {

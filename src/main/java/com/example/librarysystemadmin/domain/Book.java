@@ -4,9 +4,9 @@ import java.sql.Date;
 
 public class Book {
     //书籍id
-    private Long book_id;
+    private Long bookId;
     //书籍名称
-    private String book_name;
+    private String bookName;
     //作者
     private String author;
     //封面
@@ -16,31 +16,31 @@ public class Book {
     //出版社
     private String publisher;
     //出版日期
-    private Date publish_date;
+    private Date publishDate;
     //ISBN 编码 全国图书统一编号
     private String isbn;
     //书籍分类id
-    private Long category_id;
+    private Long categoryId;
     //书籍状态 0：可以外借 1：只能馆内阅读
-    private int is_borrowable;
+    private int isBorrowable;
 
-    private int borrowing_volume;
+    private int borrowingVolume;
 
 
-    public Long getBook_id() {
-        return book_id;
+    public Long getBookId() {
+        return bookId;
     }
 
-    public void setBook_id(Long book_id) {
-        this.book_id = book_id;
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
     }
 
-    public String getBook_name() {
-        return book_name;
+    public String getBookName() {
+        return bookName;
     }
 
-    public void setBook_name(String book_name) {
-        this.book_name = book_name;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public String getAuthor() {
@@ -75,12 +75,12 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public Date getPublish_date() {
-        return publish_date;
+    public Date getPublishDate() {
+        return publishDate;
     }
 
-    public void setPublish_date(Date publish_date) {
-        this.publish_date = publish_date;
+    public void setPublishDate(Date publishDate) {
+        this.publishDate = publishDate;
     }
 
     public String getIsbn() {
@@ -91,44 +91,44 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public Long getCategory_id() {
-        return category_id;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory_id(Long category_id) {
-        this.category_id = category_id;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public int getIs_borrowable() {
-        return is_borrowable;
+    public int getIsBorrowable() {
+        return isBorrowable;
     }
 
-    public void setIs_borrowable(int is_borrowable) {
-        this.is_borrowable = is_borrowable;
+    public void setIsBorrowable(int isBorrowable) {
+        this.isBorrowable = isBorrowable;
     }
 
-    public int getBorrowing_volume() {
-        return borrowing_volume;
+    public int getBorrowingVolume() {
+        return borrowingVolume;
     }
 
-    public void setBorrowing_volume(int borrowing_volume) {
-        this.borrowing_volume = borrowing_volume;
+    public void setBorrowingVolume(int borrowingVolume) {
+        this.borrowingVolume = borrowingVolume;
     }
 
     @Override
     public String toString() {
         return "Book{" +
-                "book_id=" + book_id +
-                ", book_name='" + book_name + '\'' +
+                "bookId=" + bookId +
+                ", bookName='" + bookName + '\'' +
                 ", author='" + author + '\'' +
                 ", cover='" + cover + '\'' +
                 ", introduction='" + introduction + '\'' +
                 ", publisher='" + publisher + '\'' +
-                ", publish_date=" + publish_date +
+                ", publishDate=" + publishDate +
                 ", isbn='" + isbn + '\'' +
-                ", category_id=" + category_id +
-                ", is_borrowable=" + is_borrowable +
-                ", borrowing_volume=" + borrowing_volume +
+                ", categoryId=" + categoryId +
+                ", isBorrowable=" + isBorrowable +
+                ", borrowingVolume=" + borrowingVolume +
                 '}';
     }
 }

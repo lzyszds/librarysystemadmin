@@ -2,32 +2,32 @@ package com.example.librarysystemadmin.domain;
 
 public class CategoryCopiesBook extends Book {
 
-    private String category_name;
-    private long copy_id;
+    private String categoryName;
+    private long copyId;
 
 
-    public String getCategory_name() {
-        return category_name;
+    public String getcategoryName() {
+        return categoryName;
     }
 
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+    public void setcategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
 
-    public long getCopy_id() {
-        return copy_id;
+    public long getcopyId() {
+        return copyId;
     }
 
-    public void setCopy_id(long copy_id) {
-        this.copy_id = copy_id;
+    public void setcopyId(long copyId) {
+        this.copyId = copyId;
     }
 
     @Override
     public String toString() {
         return "CategoryCopiesBook{" +
-                "category_name='" + category_name + '\'' +
-                ", copy_id=" + copy_id +
+                "categoryName='" + categoryName + '\'' +
+                ", copyId=" + copyId +
                 '}';
     }
 }

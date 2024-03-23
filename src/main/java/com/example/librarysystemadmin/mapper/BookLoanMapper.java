@@ -9,9 +9,7 @@ import java.util.Date;
 @Mapper
 public interface BookLoanMapper {
 
-    @Select("SELECT l.loan_id as loanId, l.loan_date as loanDate, l.due_date as dueDate, l.return_date as returnDate, " +
-            "b.book_id as bookId, b.book_name as bookName,b.isbn as bookIsbn ,bc.copy_id as copyId, " +
-            "u.id as userId, u.name as name " +
+    @Select("SELECT *" +
             "FROM library_book_loan l " +
             "INNER JOIN books b ON l.book_id = b.book_id " +
             "INNER JOIN book_copies bc ON bc.copy_id = l.copy_id " +
@@ -42,6 +40,10 @@ public interface BookLoanMapper {
 
     @Select("SELECT copy_id FROM book_copies WHERE book_id = #{bookId} and status = 0")
     String[] getCopyIdByBookId(Integer bookId);
+
+    @Select("SELECT * " +
+            "FROM library_book_loan WHERE user_id = #{userId}")
+    BookLoan[] getBookLoanByUserId(Integer userId);
 
 
 }

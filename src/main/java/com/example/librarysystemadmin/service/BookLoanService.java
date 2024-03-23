@@ -19,6 +19,8 @@ public interface BookLoanService {
 
     ApiResponse<String> borrowingBook(Integer bookId, String token);
 
+    ApiResponse<BookLoan[]> getBookLoanByUserId(String token);
+
     ApiResponse<String> getCopyId(Integer bookId);
 
     ApiResponse<String> returnBook(BookLoan param, String token);

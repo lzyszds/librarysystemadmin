@@ -3,32 +3,19 @@ package com.example.librarysystemadmin.domain;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "library_book_loan")
 public class BookLoan {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "loan_id")
     private Integer loanId;
-
-    @Column(name = "book_id")
     private Integer bookId;
 
-    @Column(name = "copy_id")
     private String copyId;
 
 
-    @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "loan_date")
     private Date loanDate;
 
-    @Column(name = "due_date")
     private Date dueDate;
 
-    @Column(name = "return_date")
     private Date returnDate;
 
 

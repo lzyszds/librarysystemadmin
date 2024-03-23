@@ -122,6 +122,20 @@ public class BookLoanServiceImpl implements BookLoanService {
         return apiResponse;
     }
 
+    @Override
+    public ApiResponse<BookLoan[]> getBookLoanByUserId(String token) {
+        ApiResponse<BookLoan[]> apiResponse = new ApiResponse<>();
+        UserSecret user = usersMapper.getUserByToken(token);
+        if (user == null) {
+            apiResponse.setErrorResponse(400, "用户不存在");
+        } else {
+            BookLoan[] bookLoans = bookLoanMapper.getBookLoanByUserId(user.getId());
+            System.out.println(bookLoans);
+            apiResponse.setSuccessResponse(bookLoans);
+        }
+        return apiResponse;
+    }
+
 
     public ApiResponse<String> getCopyId(Integer bookId) {
         ApiResponse<String> apiResponse = new ApiResponse<>();

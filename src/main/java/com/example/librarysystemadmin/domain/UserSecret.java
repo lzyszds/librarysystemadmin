@@ -10,7 +10,7 @@ public class UserSecret {
     private String phone;  // 电话
     private String address; // 地址
     private String name;    // 姓名
-    private Date created_at;   // 创建时间
+    private Date createdAt;   // 创建时间
     private String sex; // 性别
 
     private String borrow; // 当前借阅
@@ -73,12 +73,12 @@ public class UserSecret {
         this.name = name;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getcreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setcreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getSex() {
@@ -115,7 +115,7 @@ public class UserSecret {
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
-                ", created_at=" + created_at +
+                ", createdAt=" + createdAt +
                 ", sex='" + sex + '\'' +
                 ", borrow='" + borrow + '\'' +
                 ", historyBorrow='" + historyBorrow + '\'' +

@@ -5,19 +5,13 @@ import javax.persistence.Id;
 import java.util.Date;
 
 public class BookLoanWithBookUser extends BookLoan {
-    @Id
-    @Column(name = "loan_id")
     private Integer loanId;
 
-    @Column(name = "book_name")
     private String bookName;
 
-    @Column(name = "book_isbn")
-    private String bookIsbn;
+    private String isbn;
 
-    @Column(name = "name")
     private String name;
-
 
 
     @Override
@@ -38,12 +32,12 @@ public class BookLoanWithBookUser extends BookLoan {
         this.bookName = bookName;
     }
 
-    public String getBookIsbn() {
-        return bookIsbn;
+    public String getisbn() {
+        return isbn;
     }
 
-    public void setBookIsbn(String bookIsbn) {
-        this.bookIsbn = bookIsbn;
+    public void setisbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public String getName() {
@@ -59,7 +53,7 @@ public class BookLoanWithBookUser extends BookLoan {
         return "BookLoanWithBookUser{" +
                 "loanId=" + loanId +
                 ", bookName='" + bookName + '\'' +
-                ", bookIsbn='" + bookIsbn + '\'' +
+                ", isbn='" + isbn + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

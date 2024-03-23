@@ -69,6 +69,12 @@ public class bookLoanController {
         return bookLoanService.getBorrowedBooks(request);
     }
 
+    //根据用户id查看用户借阅的书籍归还时间
+    @RequestMapping("/getBookLoanByUserId")
+    public ApiResponse<BookLoan[]> getBookLoanByUserId(HttpServletRequest request) {
+        return bookLoanService.getBookLoanByUserId(request.getHeader("token"));
+    }
+
     /*
      *  还书接口
      *  还书接口需要传入图书id和副本号和用户id
