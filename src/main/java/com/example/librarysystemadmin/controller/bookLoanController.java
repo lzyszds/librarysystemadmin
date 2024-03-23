@@ -47,8 +47,7 @@ public class bookLoanController {
      * */
     @PostMapping("/borrowingBook")
     public ApiResponse<String> borrowingBook(@RequestBody BookLoan param, HttpServletRequest request) {
-        Cookie[] tokens = request.getCookies();
-        String token = TokenUtils.getToken(tokens);
+        String token = request.getHeader("token");
         System.out.println(token);
         return bookLoanService.borrowingBook(param.getBookId(), token);
     }

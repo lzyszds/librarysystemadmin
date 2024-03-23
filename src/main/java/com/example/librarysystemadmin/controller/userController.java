@@ -74,30 +74,15 @@ public class userController {
     @RequestMapping("/voucherToken")
     public ApiResponse<UserSecret> voucherToken(HttpServletRequest request) {
         // 从请求中获取token
-        Cookie[] cookies = request.getCookies();
+        String token = request.getHeader("token");
 
         //获取token 键值
-        if (cookies == null) {
+        if (token == null) {
             ApiResponse<UserSecret> apiResponse = new ApiResponse<>();
             apiResponse.setErrorResponse(401, "未登录");
             return apiResponse;
         }
-        String tokenValue = null;
-        for (Cookie cookie : cookies) {
-            if ("token".equals(cookie.getName())) {
-                tokenValue = cookie.getValue();
-            } else {
-                tokenValue = request.getHeader("token");
-            }
-        }
-
-        if (tokenValue == null) {
-            ApiResponse<UserSecret> apiResponse = new ApiResponse<>();
-            apiResponse.setErrorResponse(401, "未登录");
-            return apiResponse;
-        }
-        System.out.println("tokenValue: " + tokenValue);
-        return usersService.getUserByToken(tokenValue);
+        return usersService.getUserByToken(token);
     }
 
 
