@@ -61,6 +61,7 @@ public class BookLoanServiceImpl implements BookLoanService {
             String userId = Integer.toString(usersMapper.getUserByToken(token).getId());
             apiResponse.setSuccessResponse(bookCopiesMapper.getBorrowedBooks(userId));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             apiResponse.setErrorResponse(500, "查询失败");
         }
         return apiResponse;
@@ -137,9 +138,10 @@ public class BookLoanServiceImpl implements BookLoanService {
         ApiResponse<String> apiResponse = new ApiResponse<>();
 
         UserSecret user = usersMapper.getUserByToken(token);
+
         if (user == null) {
             apiResponse.setErrorResponse(400, "用户不存在");
-        } else {
+        } else if (user.getRole() == 0) {
             //获取当前时间
             Date returnDate = new Date(System.currentTimeMillis());
             //获取当前书籍借阅信息的id
@@ -148,8 +150,10 @@ public class BookLoanServiceImpl implements BookLoanService {
                 apiResponse.setErrorResponse(400, "归还失败");
                 return apiResponse;
             }
+            //获取当前借阅用户的信息
+            User loanUser = usersMapper.getUserByid(param.getUserId());
             //给用户借阅字段删除当前书籍id
-            String[] borrowIds = user.getBorrow().split(",");
+            String[] borrowIds = loanUser.getBorrow().split(",");
             String borrow = "";
             for (int i = 0; i < borrowIds.length; i++) {
                 if (!borrowIds[i].equals(param.getBookId().toString())) {
@@ -157,15 +161,17 @@ public class BookLoanServiceImpl implements BookLoanService {
                 }
             }
             if (borrow.equals("")) {
-                usersMapper.updateBorrowCount(user.getId(), "");
+                usersMapper.updateBorrowCount(param.getUserId(), "");
             } else {
-                usersMapper.updateBorrowCount(user.getId(), borrow.substring(0, borrow.length() - 1));
+                usersMapper.updateBorrowCount(param.getUserId(), borrow.substring(0, borrow.length() - 1));
             }
             //给书籍副本添加归还状态
             bookCopiesMapper.setBookCopiesStatus(param.getCopyId(), 0);
             //给日志表添加归还记录
             statisticService.setStatisticsHandle("returned");
             apiResponse.setSuccessResponse("归还成功");
+        } else {
+            apiResponse.setErrorResponse(400, "权限不足");
         }
         return apiResponse;
     }

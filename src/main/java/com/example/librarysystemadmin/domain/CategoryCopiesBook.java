@@ -3,8 +3,8 @@ package com.example.librarysystemadmin.domain;
 public class CategoryCopiesBook extends Book {
 
     private String category_name;
-
     private long copy_id;
+
 
     public String getCategory_name() {
         return category_name;
