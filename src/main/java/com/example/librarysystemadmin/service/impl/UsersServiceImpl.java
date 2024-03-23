@@ -146,8 +146,8 @@ public class UsersServiceImpl implements UsersService {
         UserSecret user = usersMapper.getUserByToken(token);
         int operatorRole = user.getRole(); // 获取操作用户的角色
         int role = usersMapper.voucherIdRole(id); // 获取被操作用户的角色
-        // 上级用户只能修改下级用户信息，不能修改跟自己同级的用户信息
-        if (operatorRole <= role && !Integer.toString(user.getId()).equals("0")) {
+        // 上级用户只能修改下级用户信息，不能修改跟自己同级的用户信息(除了超级管理员)
+        if (operatorRole <= role && Integer.toString(user.getId()).equals("0")) {
             return "权限不足";
         }
 
@@ -173,10 +173,8 @@ public class UsersServiceImpl implements UsersService {
         // 根据token获取用户信息
         UserSecret user = usersMapper.getUserByToken(token);
         int operatorRole = user.getRole(); // 获取操作用户的角色
-        // 上级用户只能修改下级用户信息，不能修改跟自己同级的用户信息
-        if (operatorRole <= Integer.parseInt(role) && !Integer.toString(user.getId()).equals("0")) {
-            return "权限不足";
-        }
+        // 上级用户只能修改下级用户信息，不能修改跟自己同级的用户信息(除了超级管理员)
+        if (operatorRole <= Integer.parseInt(role) && Integer.toString(user.getId()).equals("0")) return "权限不足";
         //"修改失败,用户可能不存在，请重新尝试"
         if (usersMapper.getUserByid(Integer.parseInt(id)) == null) {
             return "修改失败,用户可能不存在，请重新尝试";
