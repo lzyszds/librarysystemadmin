@@ -13,9 +13,7 @@ import java.util.Map;
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private MyInterceptor myInterceptor;
-
     public String pathAll = "";
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         String[] user = {"login", "register"};
@@ -42,12 +40,8 @@ public class WebConfig implements WebMvcConfigurer {
         });
         // pathAll[0] 将其转换为数组
         String[] allExcludedPathsArr = pathAll.split(",");
-
-
         registry.addInterceptor(myInterceptor).addPathPatterns("/Api/**")//拦截所有路由
                 //放行路由
                 .excludePathPatterns(allExcludedPathsArr);
     }
-
-
 }

@@ -78,7 +78,7 @@ public class bookLoanController {
     /*
      *  还书接口
      *  还书接口需要传入图书id和副本号和用户id
-     *  因为是后台操作，所以不使用token来获取用户id
+     *  因为是后台操作，所以使用token来获取用户id
      *  还书成功返回还书成功
      * */
     @PostMapping("/returnBook")

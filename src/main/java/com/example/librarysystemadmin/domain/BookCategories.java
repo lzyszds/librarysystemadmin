@@ -2,30 +2,30 @@ package com.example.librarysystemadmin.domain;
 
 public class BookCategories {
 
-    private Long category_id;
-    private String category_name;
+    private Long categoryId;
+    private String categoryName;
 
-    public Long getCategory_id() {
-        return category_id;
+    public Long getcategoryId() {
+        return categoryId;
     }
 
-    public String getCategory_name() {
-        return category_name;
+    public String getcategoryName() {
+        return categoryName;
     }
 
-    public void setCategory_id(Long category_id) {
-        this.category_id = category_id;
+    public void setcategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+    public void setcategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     @Override
     public String toString() {
         return "BookCategories{" +
-                "category_id=" + category_id +
-                ", category_name='" + category_name + '\'' +
+                "categoryId=" + categoryId +
+                ", categoryName='" + categoryName + '\'' +
                 '}';
     }
 }

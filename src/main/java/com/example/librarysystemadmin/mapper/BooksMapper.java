@@ -20,9 +20,11 @@ public interface BooksMapper {
     @Select("SELECT count(*) FROM books where book_name like '%${search}%' or author like '%${search}%' or " + "publisher like '%${search}%' or isbn like '%${search}%' or introduction like '%${search}%'")
     int getBookCount(String search);
 
+    //保存图书信息
     @Insert("INSERT INTO books (book_name, author, cover, publisher, publish_date, isbn, introduction, category_id, is_borrowable) " + "VALUES (#{book_name}, #{author}, #{cover}, #{publisher}, #{publish_date}, #{isbn}, #{introduction}, #{category_id}, #{is_borrowable})")
     int saveBookInfo(Book book);
 
+    //更新图书信息
     @Update("UPDATE books SET book_name = #{book_name}, author = #{author}, cover = #{cover}, publisher = #{publisher}, publish_date = #{publish_date}, " + "isbn = #{isbn}, introduction = #{introduction}, category_id = #{category_id}, is_borrowable = #{is_borrowable} WHERE book_id = #{book_id}")
     int updateBookInfo(Book book);
 
@@ -77,7 +79,6 @@ public interface BooksMapper {
     //获取分类书籍量最大的分类前n项
     @Select("SELECT c.category_id, c.category_name, count(*) as count \n" +
             "FROM books LEFT JOIN categories c ON books.category_id = c.category_id \n" +
-            "WHERE c.category_name <> '小说' \n" +
             "GROUP BY c.category_id  \n" +
             "ORDER BY count \n" +
             "DESC LIMIT #{book_id}")

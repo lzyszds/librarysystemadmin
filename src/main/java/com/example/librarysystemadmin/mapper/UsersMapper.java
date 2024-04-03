@@ -27,7 +27,7 @@ public interface UsersMapper {
     @Select("SELECT username FROM users WHERE id = #{id}")
     String getUserNameById(String id);
 
-    // 根据用户id获取用户名称
+    // 根据用户id获取详情
     @Select("SELECT * FROM users WHERE id in (#{id})")
     User getUserByid(int id);
 
@@ -35,6 +35,7 @@ public interface UsersMapper {
     @Select("SELECT role from users where token = #{token} ")
     Integer voucherRole(String token);
 
+    // 根据用户id获取用户角色
     @Select("SELECT role from users where id = #{id} ")
     int voucherIdRole(String id);
 
@@ -57,6 +58,7 @@ public interface UsersMapper {
     @Update("UPDATE users SET name=#{name}, email=#{email}, phone=#{phone}, role=#{role}, sex=#{sex}, address=#{address} WHERE id=#{id} ")
     int updateUserListInfo(String id, String name, String email, String phone, String role, String sex, String address);
 
+    // 修改当日系统图书借阅次数
     @Update("UPDATE users SET borrow=#{borrow} WHERE id=#{id}")
     void updateBorrowCount(int id, String borrow);
 }

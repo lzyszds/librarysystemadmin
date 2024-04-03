@@ -40,5 +40,5 @@ public interface StatisticsLogMapper {
     Statistic[] getStatisticsLog(int limit);
 
     @Select("SELECT * FROM statistics_log WHERE log_date = #{date}")
-    int getStatisticsLogByDate(Date date);
+    String getStatisticsLogByDate(String date);
 }

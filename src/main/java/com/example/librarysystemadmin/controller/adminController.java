@@ -14,11 +14,11 @@ public class adminController {
 
     /**
      * 生成验证码
-     */
-    @RequestMapping("/captcha")
-    public void defaultKaptcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 使用gif验证码
-        ArithmeticCaptcha captcha = new ArithmeticCaptcha(130, 48);
+                */
+        @RequestMapping("/captcha")
+        public void defaultKaptcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
+            // 使用gif验证码
+            ArithmeticCaptcha captcha = new ArithmeticCaptcha(130, 48);
         // 几位数运算，默认是两位
         captcha.setLen(2);
 

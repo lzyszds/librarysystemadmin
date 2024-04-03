@@ -22,4 +22,7 @@ public class StatisticsController {
         apiResponse.setSuccessResponse(statistics);
         return apiResponse;
     }
+
+
+
 }

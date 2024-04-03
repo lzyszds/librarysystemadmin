@@ -27,7 +27,7 @@ public class StatisticServiceImpl implements StatisticService {
                 statisticsLogMapper.updateNewBooksCount(newDate);
                 break;
             case "borrowed":
-                statisticsLogMapper.updateBooksReturnedCount(newDate);
+                statisticsLogMapper.updateBooksBorrowedCount(newDate);
                 break;
             case "returned":
                 statisticsLogMapper.updateBooksReturnedCount(newDate);

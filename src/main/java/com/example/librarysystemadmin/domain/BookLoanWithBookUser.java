@@ -1,9 +1,5 @@
 package com.example.librarysystemadmin.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import java.util.Date;
-
 public class BookLoanWithBookUser extends BookLoan {
     private Integer loanId;
 

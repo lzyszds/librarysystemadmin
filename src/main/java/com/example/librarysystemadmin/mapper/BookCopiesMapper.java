@@ -18,16 +18,11 @@ public interface BookCopiesMapper {
             "</script>")
     int addBookCopies(@Param("bookCopiesArray") BookCopies[] bookCopiesArray);
 
-    /*
-     * 一次性删除多条数据
-     * */
-
+    //一次性删除多条数据
     @Delete("DELETE FROM book_copies WHERE book_id in (${book_id})")
     int deleteBookCopies(String book_id);
 
-    /*
-     *   查询图书副本是否存在
-     * */
+    // 查询图书副本是否存在
     @Select("SELECT COUNT(*) FROM book_copies WHERE book_id in (#{book_id})")
     int getBookCopiesList(String book_id);
 

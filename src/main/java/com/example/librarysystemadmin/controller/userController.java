@@ -115,7 +115,6 @@ public class userController {
     @PostMapping("/devastateUser")
     public ApiResponse<String> devastateUser(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-
         //只有为管理员才能获取
         String id = params.get("id");
         if (id.contains(".0.")) {
@@ -132,12 +131,10 @@ public class userController {
                 // 返回成功结果和成功码
                 apiResponse.setErrorResponse(200, "删除成功");
             }
-
         } catch (Exception e) {
             // 捕获异常并返回适当的错误信息
             apiResponse.setErrorResponse(500, e.toString());
         }
-
         return apiResponse;
     }
 
@@ -148,7 +145,6 @@ public class userController {
     @PostMapping("/resetPassword")
     public ApiResponse<String> resetPassword(@RequestBody Map<String, String> params, HttpServletRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        //只有为管理员才能获取
         String id = params.get("id");
         try {
             String result = usersService.resetPassword(id, request.getCookies());

@@ -6,6 +6,7 @@ import com.example.librarysystemadmin.mapper.BookLoanMapper;
 import com.example.librarysystemadmin.mapper.BooksMapper;
 import com.example.librarysystemadmin.mapper.UsersMapper;
 import com.example.librarysystemadmin.service.BooksService;
+import com.example.librarysystemadmin.service.StatisticService;
 import com.example.librarysystemadmin.utils.ApiResponse;
 import com.example.librarysystemadmin.utils.FormatExcelData;
 import com.example.librarysystemadmin.utils.ProcessFiles;
@@ -51,6 +52,9 @@ public class BooksServiceImpl implements BooksService {
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private StatisticService statisticsService;
 
     /*
      * 获取图书列表
@@ -544,6 +548,8 @@ public class BooksServiceImpl implements BooksService {
         } else {
             // 获取书籍信息
             CategoryCopiesBook book = booksMapper.getBookInfo(book_id);
+            // 添加浏览量
+            statisticsService.setStatisticsHandle("visits");
             apiResponse.setSuccessResponse(book);
         }
         return apiResponse;

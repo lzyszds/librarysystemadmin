@@ -29,12 +29,15 @@ public interface BookLoanMapper {
             "VALUES (#{bookId}, #{userId}, #{copyId}, #{loanDate}, #{dueDate})")
     int insertBookLoan(BookLoan bookLoan);
 
+    //更新图书借阅
     @Update("UPDATE library_book_loan SET return_date = #{returnDate} WHERE loan_id = #{loanId}")
     int updateBookLoan(Date returnDate, Integer loanId);
 
+    //删除图书借阅
     @Delete("DELETE FROM library_book_loan WHERE book_id in (#{bookId})")
     int deleteBookLoan(String bookId);
 
+    //获取图书借阅列表
     @Select("SELECT COUNT(*) FROM library_book_loan WHERE book_id in (#{bookId})")
     int getBookLoanList(String bookId);
 

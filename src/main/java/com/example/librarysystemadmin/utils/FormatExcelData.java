@@ -41,7 +41,7 @@ public class FormatExcelData {
                                 break;
                             case 5:
                                 if (sheet.getRow(i).getCell(j).getCellType() == 0) {
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
                                     // 将 String 类型转换成 Date 类型
                                     Date date = sheet.getRow(i).getCell(j).getDateCellValue();
                                     book.setPublishDate(new java.sql.Date(date.getTime()));

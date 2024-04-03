@@ -68,7 +68,7 @@ public class UsersServiceImpl implements UsersService {
             return "验证码不能为空";
         }
 
-        // 检查验证码
+        // 检查验证码 在session中获取验证码 并与用户输入的验证码进行比较
         Object sessionCaptcha = request.getSession().getAttribute("captcha");
         if (sessionCaptcha == null || !sessionCaptcha.equals(captcha)) {
             return sessionCaptcha == null ? "验证码失效" : "验证码错误";
@@ -83,7 +83,7 @@ public class UsersServiceImpl implements UsersService {
             return "用户不存在";
         }
 
-        // 验证密码
+        // 验证密码 此处使用RSA加密算法对密码进行解密 并与用户输入的密码进行比较 如果相同则返回token
         if (RSAUtils.decrypt(userInfo.getPassword()).equals(password)) {
             return userInfo.getToken();
         } else {
