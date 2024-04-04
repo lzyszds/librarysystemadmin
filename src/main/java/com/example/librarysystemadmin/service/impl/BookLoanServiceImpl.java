@@ -4,6 +4,7 @@ import com.example.librarysystemadmin.config.LibraryConfig;
 import com.example.librarysystemadmin.domain.*;
 import com.example.librarysystemadmin.mapper.BookCopiesMapper;
 import com.example.librarysystemadmin.mapper.BookLoanMapper;
+import com.example.librarysystemadmin.mapper.BooksMapper;
 import com.example.librarysystemadmin.mapper.UsersMapper;
 import com.example.librarysystemadmin.service.BookLoanService;
 import com.example.librarysystemadmin.service.StatisticService;
@@ -30,10 +31,13 @@ public class BookLoanServiceImpl implements BookLoanService {
     BookCopiesMapper bookCopiesMapper;
 
     @Autowired
-    private LibraryConfig libraryConfig;
+    LibraryConfig libraryConfig;
 
     @Autowired
     StatisticService statisticService;
+
+    @Autowired
+    BooksMapper booksMapper;
 
     ArrayUtils<String> arrayUtils = new ArrayUtils<>();
 
@@ -113,6 +117,8 @@ public class BookLoanServiceImpl implements BookLoanService {
 
             //给用户添加借阅次数
             usersMapper.updateBorrowCount(users.getId(), users.getBorrow());
+            //给书本添加借阅次数
+            booksMapper.updateBorrowingVolume(bookId);
             //给书籍副本添加借出状态
             bookCopiesMapper.setBookCopiesStatus(copyId[0].toString(), 1);
             //给日志表添加借阅记录

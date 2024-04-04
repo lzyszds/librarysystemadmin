@@ -14,7 +14,7 @@ public interface BooksMapper {
             + "FROM books b LEFT JOIN categories c ON b.category_id = c.category_id ";
     //获取图书列表
 
-    @Select(selectBook + " WHERE book_name like'%${search}%'or author like'%${search}%'or \n" + "publisher like '%${search}%' or isbn like '%${search}%' or introduction like '%${search}%' LIMIT #{page}, #{limit} ;")
+    @Select(selectBook + " WHERE book_name like'%${search}%'or author like'%${search}%'or \n" + "publisher like '%${search}%' or isbn like '%${search}%' or introduction like '%${search}%' or category_name like '%${search}%' LIMIT #{page}, #{limit} ;")
     CategoryCopiesBook[] getBookList(String search, int page, int limit);
 
     @Select("SELECT count(*) FROM books where book_name like '%${search}%' or author like '%${search}%' or " + "publisher like '%${search}%' or isbn like '%${search}%' or introduction like '%${search}%'")
@@ -67,6 +67,10 @@ public interface BooksMapper {
     //获取热门图书列表
     @Select(selectBook + "ORDER BY borrowing_volume DESC LIMIT #{page}, #{limit} ;")
     CategoryCopiesBook[] getHotBookList(int page, int limit);
+
+    //将borrowing_volume字段++，表示借阅量+1
+    @Update("UPDATE books SET borrowing_volume = borrowing_volume + 1 WHERE book_id = #{book_id}")
+    int updateBorrowingVolume(int book_id);
 
     //获取新书列表
     @Select(selectBook + "ORDER BY publish_date DESC LIMIT #{page}, #{limit}")
