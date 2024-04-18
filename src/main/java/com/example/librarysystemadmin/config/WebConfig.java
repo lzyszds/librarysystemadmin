@@ -14,9 +14,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private MyInterceptor myInterceptor;
     public String pathAll = "";
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        String[] user = {"login", "register"};
+        String[] user = {"login", "register", "voucherToken"};
         String[] book = {
                 "getBookList",
                 "getBookInfo",

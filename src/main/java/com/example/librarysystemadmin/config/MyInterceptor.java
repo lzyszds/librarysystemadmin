@@ -23,6 +23,15 @@ public class MyInterceptor implements HandlerInterceptor {
     @Autowired
     private UsersService usersService;
 
+    //普通用户权限
+    String[] userPower = {
+            "/Api/BookLoan/borrowingBook",
+            "/Api/User/updateUserPassword",
+            "/Api/User/updateUserInfoPrivate",
+            "/Api/BookLoan/getBookLoanByUserId",
+            "/Api/BookLoan/getBorrowedBooks"
+    };
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (!hasPermission(request)) {
@@ -46,34 +55,44 @@ public class MyInterceptor implements HandlerInterceptor {
         Cookie[] cookies = request.getCookies();
         //获取请求头中的token
         String token = request.getHeader("token");
+        //获取请求路径
+        String path = request.getRequestURI();
+
         boolean voucher = false;
         //获取token 键值
         if (cookies == null) {
             if (token != null) {
-                voucher = hasVerified(token);
+                voucher = hasVerified(token, path);
             }
             return voucher;
         } else {
-            voucher = hasVerified(TokenUtils.getToken(cookies));
+            voucher = hasVerified(TokenUtils.getToken(cookies), path);
             //判断是否有权限 有权限返回true 没有通过请求头中的token再次验证
             if (voucher) {
                 return voucher;
             } else {
                 if (token != null) {
-                    voucher = hasVerified(token);
+                    voucher = hasVerified(token, path);
                 }
             }
         }
         return voucher;
     }
 
-    public Boolean hasVerified(String tokenValue) {
+    public Boolean hasVerified(String tokenValue, String path) {
         Boolean voucher = false;
         Integer role = usersService.voucherRole(tokenValue);
         //查询用户角色
         if (role == null) {
             return voucher;
         }
+        //判断用户权限 0为管理员 1为普通用户 如果是普通用户则判断是否有权限
+        for (String power : userPower) {
+            if (path.equals(power) && role == 1) {
+                return true;
+            }
+        }
+
         if (role == 0) {
             voucher = true;
         } else {

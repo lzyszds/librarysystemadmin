@@ -25,11 +25,6 @@ public class UsersServiceImpl implements UsersService {
 
     // 用户注册方法
     public String registerUser(User user) {
-        // 设置创建时间
-        user.setCreated_at(new Date(System.currentTimeMillis()));
-        // 对密码进行加密 使用用户账号作为初始密码
-        user.setPassword(RSAUtils.encrypt(user.getUsername()));
-
         // 参数验证
         if (user.getUsername() == null || user.getUsername().isEmpty()) {
             return "用户名不能为空";
@@ -42,6 +37,10 @@ public class UsersServiceImpl implements UsersService {
         if (usersMapper.getUser(user.getUsername()) != null) {
             return "用户已存在";
         }
+        // 设置创建时间
+        user.setCreated_at(new Date(System.currentTimeMillis()));
+        // 对密码进行加密 使用用户账号作为初始密码
+        user.setPassword(RSAUtils.encrypt(user.getPassword()));
 
         // 将用户名加密作为token
         String token = RSAUtils.encrypt(user.getUsername());
@@ -238,6 +237,22 @@ public class UsersServiceImpl implements UsersService {
         } else {
             apiResponse.setSuccessResponse(user);
         }
+        return apiResponse;
+    }
+
+
+    // 修改用户密码方法
+    public ApiResponse<String> updateUserPassword(Map<String, String> params, HttpServletRequest request) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        String newPassword = params.get("password");
+        // 获取token
+        String token = TokenUtils.getToken(request.getCookies());
+        // 根据token获取用户信息
+        UserSecret user = usersMapper.getUserByToken(token);
+        // 对新密码进行加密
+        newPassword = RSAUtils.encrypt(newPassword);
+        usersMapper.updateUserPassword(user.getId(), newPassword);
+        apiResponse.setSuccessResponse("修改成功");
         return apiResponse;
     }
 }

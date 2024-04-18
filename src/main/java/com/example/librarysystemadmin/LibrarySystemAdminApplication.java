@@ -31,13 +31,11 @@ public class LibrarySystemAdminApplication implements SchedulingConfigurer {
         try {
             // 启动 Quartz 调度程序
             scheduler.start();
-
             // 添加任务
             JobDetail jobDetail = JobBuilder.newJob(DailyStatsJob.class)
                     .withIdentity("dailyStatsJob")
                     .storeDurably()
                     .build();
-
             Trigger trigger = TriggerBuilder.newTrigger()
                     .forJob(jobDetail)
                     .withIdentity("dailyStatsTrigger")
@@ -45,7 +43,6 @@ public class LibrarySystemAdminApplication implements SchedulingConfigurer {
                             .withIntervalInHours(24)
                             .repeatForever())
                     .build();
-
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
             e.printStackTrace();

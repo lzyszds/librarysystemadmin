@@ -36,4 +36,6 @@ public interface UsersService {
     ApiResponse<String> updateUserInfoPrivate(Map<String, String> params, HttpServletRequest request);
 
     ApiResponse<UserSecret> getUserByToken(String token);
+
+    ApiResponse<String> updateUserPassword(Map<String, String> params, HttpServletRequest request);
 }

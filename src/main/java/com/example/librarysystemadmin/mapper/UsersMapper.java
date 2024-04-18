@@ -61,4 +61,8 @@ public interface UsersMapper {
     // 修改当日系统图书借阅次数
     @Update("UPDATE users SET borrow=#{borrow} WHERE id=#{id}")
     void updateBorrowCount(int id, String borrow);
+
+    // 修改用户信息 密码
+    @Update("UPDATE users SET password=#{password} WHERE id=#{id}")
+    void updateUserPassword(int id, String password);
 }

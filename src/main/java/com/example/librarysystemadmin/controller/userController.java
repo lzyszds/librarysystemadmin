@@ -192,4 +192,13 @@ public class userController {
     public ApiResponse<String> updateUserInfoPrivate(@RequestBody Map<String, String> params, HttpServletRequest request) {
         return usersService.updateUserInfoPrivate(params, request);
     }
+
+    /*
+     * 修改个人密码
+     * */
+
+    @PostMapping("/updateUserPassword")
+    public ApiResponse<String> updatePassword(@RequestBody Map<String, String> params, HttpServletRequest request) {
+        return usersService.updateUserPassword(params, request);
+    }
 }
