@@ -534,7 +534,7 @@ public class BooksServiceImpl implements BooksService {
      * 3.获取书籍信息
      * 4.返回结果
      * */
-    public ApiResponse<CategoryCopiesBook> getBookInfo(String book_id) {
+    public ApiResponse<CategoryCopiesBook> getBookInfo(String book_id, String token) {
         ApiResponse<CategoryCopiesBook> apiResponse = new ApiResponse<>();
         // 参数验证
         if (book_id == null) {
@@ -548,6 +548,18 @@ public class BooksServiceImpl implements BooksService {
         } else {
             // 获取书籍信息
             CategoryCopiesBook book = booksMapper.getBookInfo(book_id);
+            //判断当前用户是否借阅过该书籍
+            if (book != null && token != null && !token.equals("")) {
+                System.out.println(token);
+                //根据token获取用户信息
+                UserSecret user = usersMapper.getUserByToken(token);
+                System.out.println(book_id + "+" + user.getId());
+                String borrowCount = bookLoanMapper.getBookLoanByBookId(book_id, user.getId());
+                if (borrowCount != null) {
+                    book.setcopyId(1);
+                }
+            }
+
             // 添加浏览量
             statisticsService.setStatisticsHandle("visits");
             apiResponse.setSuccessResponse(book);

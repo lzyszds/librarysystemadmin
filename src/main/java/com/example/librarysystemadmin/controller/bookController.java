@@ -98,8 +98,8 @@ public class bookController {
 
     //获取图书详情
     @RequestMapping("/getBookInfo")
-    public ApiResponse<CategoryCopiesBook> getBookInfo(@RequestParam(required = false, defaultValue = "1") String bookId) {
-        return booksService.getBookInfo(bookId);
+    public ApiResponse<CategoryCopiesBook> getBookInfo(@RequestParam(required = false, defaultValue = "1") String bookId, HttpServletRequest request) {
+        return booksService.getBookInfo(bookId, request.getHeader("token"));
     }
 
 

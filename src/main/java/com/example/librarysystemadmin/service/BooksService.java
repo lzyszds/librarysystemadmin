@@ -33,7 +33,7 @@ public interface BooksService {
 
     ApiResponse<BookCategories[]> getTopNCategories(int n);
 
-    ApiResponse<CategoryCopiesBook> getBookInfo(String book_id);
+    ApiResponse<CategoryCopiesBook> getBookInfo(String book_id,String token);
 
 
   

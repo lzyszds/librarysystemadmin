@@ -48,5 +48,7 @@ public interface BookLoanMapper {
             "FROM library_book_loan WHERE user_id = #{userId}")
     BookLoan[] getBookLoanByUserId(Integer userId);
 
+    @Select("SELECT loan_id FROM library_book_loan WHERE book_id = #{bookId} and user_id = #{userId}")
+    String getBookLoanByBookId(String bookId, Integer userId);
 
 }
